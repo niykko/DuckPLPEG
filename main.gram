@@ -126,4 +126,4 @@ EndOfFile
     <- !.
 
 blackbox 
-    <- 'blackbox'
+    <- 'blackbox' keysep
