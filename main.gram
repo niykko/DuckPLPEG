@@ -20,13 +20,13 @@ plpgsql_statement
 # -------------------------
 
 call_statement
-    <- CALL procedure_name '(' argument_list? ')' ';'
+    <- CALL procedure_name argument_list ';'
 
 procedure_name
     <- identifier
 
 argument_list
-    <- argument (',' Spacing argument)*
+    <- '(' argument (',' argument)* ')' Spacing
 
 argument
     <- identifier 
