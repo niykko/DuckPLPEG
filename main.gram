@@ -1,0 +1,129 @@
+# ====================================================================================
+# PL/SQL PEG Grammar main file
+# ====================================================================================
+# -- This file describes the enclosing pl->pg<-sql procedure statements
+# ====================================================================================
+
+# ---- Top-level statement - This is the entry point ----
+
+prog
+    <- Spacing plpgsql_statement Spacing EndOfFile
+
+
+plpgsql_statement
+    <- (call_statement
+    / create_procedure)
+
+
+# -------------------------
+# CALL Statement
+# -------------------------
+
+call_statement
+    <- CALL procedure_name '(' argument_list? ')' ';'
+
+procedure_name
+    <- identifier
+
+argument_list
+    <- argument (',' Spacing argument)*
+
+argument
+    <- identifier 
+
+
+# -------------------------
+# CREATE PROCEDURE Statement
+# -------------------------
+
+create_procedure
+    <-  CREATE PROCEDURE procedure_name parameter_list
+        LANGUAGE language AS block_start plpgsql_block block_end
+
+parameter_list
+    <- '(' parameter (',' parameter)* ')' Spacing
+
+parameter
+    <- parameter_name data_type
+
+parameter_name 
+    <- identifier
+
+data_type 
+    <- identifier
+
+plpgsql_block
+    <- blackbox  
+
+
+# -------------------------
+# Identifiers
+# -------------------------
+
+identifier 
+    <- Spacing (quoted_id / id) Spacing
+
+quoted_id
+    <- '"' ( '""' / (!'"' .) )* '"'
+
+id  <- (!keyword) [a-zA-Z_] [a-zA-Z0-9_]* 
+
+
+# --------------------------
+# Keywords and Terminals
+# --------------------------
+
+keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / SECURITY / INVOKER / DEFINER / SET / CALL / IN / OUT / INOUT
+
+CREATE      <- 'CREATE' keysep
+PROCEDURE   <- 'PROCEDURE' keysep 
+LANGUAGE    <- 'LANGUAGE' keysep 
+PLPGSQL     <- 'plpgsql' keysep 
+AS          <- 'AS' keysep
+SECURITY    <- 'SECURITY' keysep 
+INVOKER     <- 'INVOKER' keysep 
+DEFINER     <- 'DEFINER' keysep 
+SET         <- 'SET' keysep 
+CALL        <- 'CALL' keysep 
+IN          <- 'IN' keysep 
+OUT         <- 'OUT' keysep 
+INOUT       <- 'INOUT' keysep 
+
+language 
+    <- PLPGSQL
+    / 'other potential language'
+
+
+# -------------------------
+# Whitespace, Comments and Aux
+# -------------------------
+
+block_start
+    <- '$$' Spacing
+    
+block_end
+    <- '$$' Spacing ';'
+
+keysep 
+    <- ![a-zA-Z0-9_] Spacing
+
+Spacing 
+    <- (Space / Comment / EndOfLine)*
+
+Space 
+    <- ' ' 
+    / '\t'
+
+Comment 
+    <- '#' ((!EndOfLine) .)* (EndOfLine / EndOfFile)
+
+EndOfLine 
+    <- '\r\n'
+    / '\n'
+    / '\r'
+
+EndOfFile
+    <- !.
+
+blackbox 
+    <- 'blackbox'
