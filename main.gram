@@ -1,7 +1,5 @@
 # ====================================================================================
-# PL/SQL PEG Grammar main file
-# ====================================================================================
-# -- This file describes the enclosing pl->pg<-sql procedure statements
+# PL/SQL PEG Grammar 
 # ====================================================================================
 
 # ---- Top-level statement - This is the entry point ----
@@ -38,7 +36,7 @@ argument
 
 create_procedure
     <-  CREATE PROCEDURE procedure_name parameter_list
-        LANGUAGE language AS block_start plpgsql_block block_end
+        LANGUAGE language AS block_start plsql_block block_end
 
 parameter_list
     <- '(' parameter (',' parameter)* ')' Spacing
@@ -52,7 +50,7 @@ parameter_name
 data_type 
     <- identifier
 
-plpgsql_block
+plsql_block
     <- blackbox  
 
 
@@ -127,3 +125,64 @@ EndOfFile
 
 blackbox 
     <- 'blackbox' keysep
+
+
+# ====================================================================================
+# PL/SQL
+# ====================================================================================
+
+plsql_block
+    <- blackbox
+
+#plsql_block
+#    <- declare_section? 
+#    BEGIN statement_list 
+#    (EXCEPTION exception_list)? 
+#    END (identifier)? ';'
+
+# -------------------------
+# DECLARE section 
+# -------------------------
+
+declare_section
+    <- DECLARE declaration_list
+
+declaration_list
+    <- declaration+
+
+declaration
+    <- identifier data_type assignment? ';'
+
+assignment 
+    <- (':=' expression)?
+
+
+# -------------------------
+# Expressions 
+# -------------------------
+
+expression 
+    <- Spacing (String
+    / Real
+    / Integer) Spacing
+    
+String 
+    <- '"' [a-zA-Z0-9_]+ '"'
+    
+Integer 
+    <- [0-9]+
+    
+Real 
+    <- [0-9]+ ('.' [0-9]+)?
+    
+
+# -------------------------
+# Data Types
+# -------------------------
+
+data_type
+    <- REAL / INT / STRING
+
+REAL    <- ('real' keysep) / ('REAL' keysep) / ('Real' keysep)
+INT     <- ('int' keysep) / ('INT' keysep) / ('Int' keysep)
+STRING  <- ('string' keysep) / ('STRING' keysep) / ('String' keysep)

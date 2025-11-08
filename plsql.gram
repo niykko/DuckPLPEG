@@ -1,13 +1,11 @@
 # ====================================================================================
 # PL/SQL
 # ====================================================================================
-# -- This file describes plpgsql blocks 
-# ====================================================================================
 
-plpgsql_block
+plsql_block
     <- blackbox
 
-#plpgsql_block
+#plsql_block
 #    <- declare_section? 
 #    BEGIN statement_list 
 #    (EXCEPTION exception_list)? 
@@ -29,7 +27,7 @@ declaration
 assignment 
     <- (':=' expression)?
 
-    
+
 # -------------------------
 # Expressions 
 # -------------------------
