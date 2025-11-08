@@ -136,7 +136,7 @@ plsql_block
 
 #plsql_block
 #    <- declare_section? 
-#    BEGIN statement_list 
+#    BEGIN statement_list # TODO
 #    (EXCEPTION exception_list)? 
 #    END (identifier)? ';'
 
@@ -154,7 +154,7 @@ declaration
     <- identifier data_type assignment? ';'
 
 assignment 
-    <- (':=' expression)?
+    <- (':=' expression)
 
 
 # -------------------------
