@@ -4,6 +4,9 @@
 
 # ---- Top-level statement - This is the entry point ----
 
+blub 
+    <- identifier
+
 prog
     <- Spacing plpgsql_statement Spacing EndOfFile
 
@@ -47,12 +50,6 @@ parameter
 parameter_name 
     <- identifier
 
-data_type 
-    <- identifier
-
-plsql_block
-    <- blackbox  
-
 
 # -------------------------
 # Identifiers
@@ -86,6 +83,9 @@ CALL        <- 'CALL' keysep
 IN          <- 'IN' keysep 
 OUT         <- 'OUT' keysep 
 INOUT       <- 'INOUT' keysep 
+BEGIN       <- 'BEGIN' keysep 
+END         <- 'END' keysep
+DECLARE     <- 'DECLARE' keysep
 
 language 
     <- PLPGSQL
@@ -156,6 +156,14 @@ declaration
 assignment 
     <- (':=' expression)
 
+# -------------------------
+# BODY section 
+# -------------------------
+
+plsql_statment 
+    <- blackbox
+
+
 
 # -------------------------
 # Expressions 
@@ -167,13 +175,18 @@ expression
     / Integer) Spacing
     
 String 
-    <- '"' [a-zA-Z0-9_]+ '"'
-    
-Integer 
-    <- [0-9]+
+    <- '"' [a-zA-Z0-9_]+ '"' / empty_string
+
+empty_string
+    <- '"' Spacing '"'
     
 Real 
     <- [0-9]+ ('.' [0-9]+)?
+
+Integer 
+    <- [0-9]+
+    
+
     
 
 # -------------------------
