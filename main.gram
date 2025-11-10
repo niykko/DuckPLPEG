@@ -170,23 +170,30 @@ plsql_statment
 # -------------------------
 
 expression 
-    <- Spacing (String
+    <- String
     / Real
-    / Integer) Spacing
+    / Integer
     
 String 
-    <- '"' [a-zA-Z0-9_]+ '"' / empty_string
+    <- Spacing (string / empty_string) Spacing
+    
+string
+    <- '"' [a-zA-Z0-9_]+ '"'
 
 empty_string
     <- '"' Spacing '"'
     
 Real 
-    <- [0-9]+ ('.' [0-9]+)?
+    <- Spacing real Spacing
+
+real 
+    <- [0-9]+ '.' [0-9]+
 
 Integer 
-    <- [0-9]+
-    
+    <- Spacing integer Spacing 
 
+integer 
+    <- [0-9]+
     
 
 # -------------------------
@@ -196,6 +203,6 @@ Integer
 data_type
     <- REAL / INT / STRING
 
-REAL    <- ('real' keysep) / ('REAL' keysep) / ('Real' keysep)
-INT     <- ('int' keysep) / ('INT' keysep) / ('Int' keysep)
-STRING  <- ('string' keysep) / ('STRING' keysep) / ('String' keysep)
+REAL    <- Spacing ('real' / 'REAL' / 'Real') keysep
+INT     <- Spacing ('int' / 'INT' / 'Int') keysep
+STRING  <- Spacing ('string' / 'STRING' / 'String') keysep 
