@@ -116,7 +116,7 @@ keysep
 
 SEP <- ';' Spacing
 OPEN <- '(' Spacing
-CLOSE <- ')' keysep 
+CLOSE <- ')' Spacing 
 COMMA <- ',' Spacing
 DOLLAR <- '$' Spacing
 DOUBLE_DOLLAR <- '$$' Spacing
