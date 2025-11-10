@@ -4,33 +4,37 @@
 
 # ---- Top-level statement - This is the entry point ----
 
-blub 
-    <- identifier
+test
+    <- .*
 
-prog
-    <- Spacing plpgsql_statement Spacing EndOfFile
-
+program
+    <- Spacing plpgsql_statement EndOfFile
 
 plpgsql_statement
     <- (call_statement
     / create_procedure)
 
 
+# +++++++++++++++++++++++++
+# PLPGSQL Statements 
+# +++++++++++++++++++++++++
+
 # -------------------------
 # CALL Statement
 # -------------------------
 
 call_statement
-    <- CALL procedure_name argument_list ';'
+    <- CALL procedure_name argument_list SEP
 
 procedure_name
     <- identifier
 
 argument_list
-    <- '(' argument (',' argument)* ')' Spacing
+    <- OPEN argument (COMMA argument)* CLOSE
 
 argument
     <- identifier 
+    / expression 
 
 
 # -------------------------
@@ -42,13 +46,19 @@ create_procedure
         LANGUAGE language AS block_start plsql_block block_end
 
 parameter_list
-    <- '(' parameter (',' parameter)* ')' Spacing
+    <- OPEN parameter (COMMA parameter)* CLOSE
 
 parameter
-    <- parameter_name data_type
+    <- parameter_name type
 
 parameter_name 
     <- identifier
+
+block_start
+    <- DOUBLE_DOLLAR
+    
+block_end
+    <- DOUBLE_DOLLAR Spacing SEP
 
 
 # -------------------------
@@ -56,16 +66,22 @@ parameter_name
 # -------------------------
 
 identifier 
-    <- Spacing (quoted_id / id) Spacing
+    <- (quoted_id / id) Spacing
 
 quoted_id
     <- '"' ( '""' / (!'"' .) )* '"'
 
-id  <- (!keyword) [a-zA-Z_] [a-zA-Z0-9_]* 
+id  <- (!keyword) idStart idChars* 
+
+idStart
+    <- [a-zA-Z_]
+
+idChars 
+    <- [a-zA-Z0-9_]
 
 
 # --------------------------
-# Keywords and Terminals
+# PLPGSQL Keywords
 # --------------------------
 
 keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / SECURITY / INVOKER / DEFINER / SET / CALL / IN / OUT / INOUT
@@ -91,19 +107,24 @@ language
     <- PLPGSQL
     / 'other potential language'
 
+# --------------------------
+# Meta Keywords
+# --------------------------
+
+keysep 
+    <- !idChars Spacing
+
+SEP <- ';' Spacing
+OPEN <- '(' Spacing
+CLOSE <- ')' keysep 
+COMMA <- ',' Spacing
+DOLLAR <- '$' Spacing
+DOUBLE_DOLLAR <- '$$' Spacing
+ASSIGN <- ':=' Spacing
 
 # -------------------------
 # Whitespace, Comments and Aux
 # -------------------------
-
-block_start
-    <- '$$' Spacing
-    
-block_end
-    <- '$$' Spacing ';'
-
-keysep 
-    <- ![a-zA-Z0-9_] Spacing
 
 Spacing 
     <- (Space / Comment / EndOfLine)*
@@ -124,7 +145,7 @@ EndOfFile
     <- !.
 
 blackbox 
-    <- 'blackbox' keysep
+    <- DOLLAR (!DOLLAR .)* DOLLAR Spacing
 
 
 # ====================================================================================
@@ -151,58 +172,17 @@ declaration_list
     <- declaration+
 
 declaration
-    <- identifier data_type assignment? ';'
+    <- identifier type assignment? SEP
 
 assignment 
-    <- (':=' expression)
-
-# -------------------------
-# BODY section 
-# -------------------------
+    <- ASSIGN expression
 
 plsql_statment 
     <- blackbox
 
-
-
-# -------------------------
-# Expressions 
-# -------------------------
-
 expression 
-    <- String
-    / Real
-    / Integer
-    
-String 
-    <- Spacing (string / empty_string) Spacing
-    
-string
-    <- '"' [a-zA-Z0-9_]+ '"'
+    <- blackbox
 
-empty_string
-    <- '"' Spacing '"'
-    
-Real 
-    <- Spacing real Spacing
+type 
+    <- blackbox 
 
-real 
-    <- [0-9]+ '.' [0-9]+
-
-Integer 
-    <- Spacing integer Spacing 
-
-integer 
-    <- [0-9]+
-    
-
-# -------------------------
-# Data Types
-# -------------------------
-
-data_type
-    <- REAL / INT / STRING
-
-REAL    <- Spacing ('real' / 'REAL' / 'Real') keysep
-INT     <- Spacing ('int' / 'INT' / 'Int') keysep
-STRING  <- Spacing ('string' / 'STRING' / 'String') keysep 
