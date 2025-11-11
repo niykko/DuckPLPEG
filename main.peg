@@ -142,10 +142,10 @@ block_end
     <- DOUBLE_DOLLAR
 
 obj_file
-    <- quoted_id Spacing
+    <- quoted_id Spacing    # TODO: potentially use single quotes here
 
 link_symbol 
-    <- quoted_id Spacing
+    <- quoted_id Spacing    # TODO: potentially use single quotes here
 
 
 # -------------------------
