@@ -97,7 +97,7 @@ argtype
     <- type 
 
 default_expr 
-    <- expr
+    <- expression
 
 column_list 
     <- OPEN column (COMMA column)* CLOSE
@@ -253,6 +253,7 @@ CURRENT     <- 'CURRENT' keysep
 UNSAFE      <- 'UNSAFE' keysep
 RESTRICTED  <- 'RESTRICTED' keysep
 SAFE        <- 'SAFE' keysep
+DEFAULT     <- 'DEFAULT' keysep
 
 language 
     <- PLPGSQL
