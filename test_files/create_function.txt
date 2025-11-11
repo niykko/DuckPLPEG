@@ -1,0 +1,90 @@
+CREATE FUNCTION f1() RETURNS integer AS $$ $blackbox$ $$ LANGUAGE sql;
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE OR REPLACE FUNCTION f2() RETURNS text AS $$ $blackbox$ $$ LANGUAGE sql;
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE FUNCTION f3(OUT result int) AS $$ $blackbox$ $$ LANGUAGE sql;
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE FUNCTION f4(a int, b int)
+RETURNS TABLE (sum int, product int)
+AS $$
+$blackbox$
+$$ LANGUAGE plpgsql;
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE FUNCTION f5()
+RETURNS integer
+TRANSFORM FOR TYPE json, FOR TYPE xml
+LANGUAGE c
+AS "func.so", "symbolname";
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE FUNCTION f6(a int)
+RETURNS int
+LANGUAGE sql
+IMMUTABLE
+LEAKPROOF
+CALLED ON NULL INPUT
+COST 5
+ROWS 10
+AS $$ $blackbox$ $$;
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE FUNCTION f7(x int)
+RETURNS int
+LANGUAGE plpgsql
+SECURITY DEFINER
+PARALLEL SAFE
+AS $$ $blackbox$ $$;
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE FUNCTION f8(x int DEFAULT 5, y int = 10)
+RETURNS int
+LANGUAGE sql
+AS $$ $blackbox$ $$;
+
+
+--------------------------------------------------------------------------------
+
+
+CREATE OR REPLACE FUNCTION f11(IN a int, INOUT b int DEFAULT 2)
+RETURNS TABLE (x int, y text)
+LANGUAGE plpgsql
+TRANSFORM FOR TYPE json, FOR TYPE xml
+IMMUTABLE
+NOT LEAKPROOF
+SECURITY INVOKER
+PARALLEL RESTRICTED
+COST 2.5
+ROWS 50
+SUPPORT helper_func
+SET search_path TO public
+AS $$
+$blackbox$
+$$;
+
+
+--------------------------------------------------------------------------------
