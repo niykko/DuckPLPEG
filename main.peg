@@ -196,13 +196,11 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / AS
 / WINDOW / IMMUTABLE / STABLE / VOLATILE / NOT
 / LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
 / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
-/ TO / FROM / CURRENT / UNSAFE / RESTRICTED
+/ TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT
 
 CREATE      <- 'CREATE' keysep / 'create' keysep / 'Create' keysep
 PROCEDURE   <- 'PROCEDURE' keysep / 'procedure' keysep / 'Procedure' keysep
 LANGUAGE    <- 'LANGUAGE' keysep / 'language' keysep / 'Language' keysep
-PLPGSQL     <- 'plpgsql' keysep / 'PLPGSQL' keysep
-SQL         <- 'sql' keysep / 'SQL' keysep / 'Sql' keysep
 AS          <- 'AS' keysep / 'as' keysep / 'As' keysep
 SECURITY    <- 'SECURITY' keysep / 'security' keysep
 INVOKER     <- 'INVOKER' keysep / 'invoker' keysep / 'Invoker' keysep
@@ -248,8 +246,14 @@ RESTRICTED  <- 'RESTRICTED' keysep / 'restricted' keysep
 SAFE        <- 'SAFE' keysep / 'safe' keysep / 'Safe' keysep
 DEFAULT     <- 'DEFAULT' keysep / 'default' keysep / 'Default' keysep
 
+PLPGSQL     <- 'plpgsql' keysep / 'PLPGSQL' keysep
+SQL         <- 'sql' keysep / 'SQL' keysep / 'Sql' keysep
+C           <- 'c' keysep / 'C' keysep
+
 language 
     <- PLPGSQL
+    / SQL
+    / C
     / 'other potential language'
 
 # --------------------------
