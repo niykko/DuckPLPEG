@@ -12,7 +12,6 @@ program
 
 plpgsql_statement
     <- (call_statement
-    / create_procedure
     / create_function)
 
 
@@ -108,7 +107,6 @@ function_option
     / AS obj_file COMMA link_symbol
     #TODO: implement 'sql_body' from postgres documentation?
     )
-
 
 transform 
     <- TRANSFORM transform_list 
