@@ -84,7 +84,9 @@ idChars
 # PLPGSQL Keywords
 # --------------------------
 
-keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / SECURITY / INVOKER / DEFINER / SET / CALL / IN / OUT / INOUT
+keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / AS 
+/ SECURITY / INVOKER / DEFINER / SET / CALL / IN / OUT 
+/ INOUT / BEGIN / END / DECLARE
 
 CREATE      <- 'CREATE' keysep
 PROCEDURE   <- 'PROCEDURE' keysep 
