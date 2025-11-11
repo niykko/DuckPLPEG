@@ -202,8 +202,8 @@ CREATE      <- 'CREATE' keysep / 'create' keysep / 'Create' keysep
 PROCEDURE   <- 'PROCEDURE' keysep / 'procedure' keysep / 'Procedure' keysep
 LANGUAGE    <- 'LANGUAGE' keysep / 'language' keysep / 'Language' keysep
 PLPGSQL     <- 'plpgsql' keysep / 'PLPGSQL' keysep
-SQL         <- 'sql' keysep / 'SQL' keysep
-AS          <- 'AS' keysep / 'as' keysep
+SQL         <- 'sql' keysep / 'SQL' keysep / 'Sql' keysep
+AS          <- 'AS' keysep / 'as' keysep / 'As' keysep
 SECURITY    <- 'SECURITY' keysep / 'security' keysep
 INVOKER     <- 'INVOKER' keysep / 'invoker' keysep / 'Invoker' keysep
 DEFINER     <- 'DEFINER' keysep / 'definer' keysep / 'Definer' keysep
