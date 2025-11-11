@@ -42,30 +42,7 @@ argument
 # CREATE PROCEDURE Statement
 # -------------------------
 
-create_procedure
-    <-  CREATE PROCEDURE procedure_name parameter_list
-        LANGUAGE language AS definition
 
-procedure_name
-    <- name
-
-parameter_list
-    <- OPEN parameter (COMMA parameter)* CLOSE
-
-parameter
-    <- parameter_name type
-
-parameter_name 
-    <- identifier
-
-definition 
-    <- block_start plsql_block block_end 
-
-block_start
-    <- DOUBLE_DOLLAR
-    
-block_end
-    <- DOUBLE_DOLLAR Spacing SEP
 
 
 # -------------------------
@@ -154,11 +131,24 @@ support_function
 configuration_parameter
     <- parameter_name
 
+parameter_name 
+    <- identifier
+
+definition 
+    <- block_start plsql_block block_end 
+
+block_start
+    <- DOUBLE_DOLLAR
+    
+block_end
+    <- DOUBLE_DOLLAR Spacing SEP
+
 obj_file
     <- name 
 
 link_symbol 
     <- name
+
 
 # -------------------------
 # Identifiers, Types and Expressions
