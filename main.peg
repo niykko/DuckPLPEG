@@ -12,7 +12,7 @@ program
 
 plpgsql_statement
     <- (call_statement
-    / create_function)
+    / create_function) SEP
 
 
 # +++++++++++++++++++++++++
@@ -139,7 +139,7 @@ block_start
     <- DOUBLE_DOLLAR
     
 block_end
-    <- DOUBLE_DOLLAR Spacing SEP
+    <- DOUBLE_DOLLAR
 
 obj_file
     <- name 
@@ -301,30 +301,6 @@ blackbox
 plsql_block
     <- blackbox
 
-#plsql_block
-#    <- declare_section? 
-#    BEGIN statement_list # TODO
-#    (EXCEPTION exception_list)? 
-#    END (identifier)? ';'
-
-# -------------------------
-# DECLARE section 
-# -------------------------
-
-declare_section
-    <- DECLARE declaration_list
-
-declaration_list
-    <- declaration+
-
-declaration
-    <- identifier type assignment? SEP
-
-assignment 
-    <- ASSIGN expression
-
-plsql_statment 
-    <- blackbox
 
 
 
