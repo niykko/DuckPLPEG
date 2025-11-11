@@ -136,7 +136,8 @@ Space
     / '\t'
 
 Comment 
-    <- '#' ((!EndOfLine) .)* (EndOfLine / EndOfFile)
+    <- '--' ((!EndOfLine) .)* (EndOfLine / EndOfFile)
+    / '/*' (!'*/' .)* '*/'
 
 EndOfLine 
     <- '\r\n'
