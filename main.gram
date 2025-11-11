@@ -5,14 +5,15 @@
 # ---- Top-level statement - This is the entry point ----
 
 test
-    <- .*
+    <- program
 
 program
     <- Spacing plpgsql_statement EndOfFile
 
 plpgsql_statement
     <- (call_statement
-    / create_procedure)
+    / create_procedure
+    / create_function)
 
 
 # +++++++++++++++++++++++++
@@ -24,10 +25,10 @@ plpgsql_statement
 # -------------------------
 
 call_statement
-    <- CALL procedure_name argument_list SEP
+    <- CALL statement_name argument_list SEP
 
-procedure_name
-    <- identifier
+statement_name 
+    <- name
 
 argument_list
     <- OPEN argument (COMMA argument)* CLOSE
@@ -43,7 +44,10 @@ argument
 
 create_procedure
     <-  CREATE PROCEDURE procedure_name parameter_list
-        LANGUAGE language AS block_start plsql_block block_end
+        LANGUAGE language AS definition
+
+procedure_name
+    <- name
 
 parameter_list
     <- OPEN parameter (COMMA parameter)* CLOSE
@@ -54,6 +58,9 @@ parameter
 parameter_name 
     <- identifier
 
+definition 
+    <- block_start plsql_block block_end 
+
 block_start
     <- DOUBLE_DOLLAR
     
@@ -62,8 +69,103 @@ block_end
 
 
 # -------------------------
-# Identifiers
+# CREATE FUNCTION Statement
 # -------------------------
+
+create_function
+    <-  CREATE (OR REPLACE)? FUNCTION function_name function_arglist
+        (RETURNS type 
+        / RETURNS TABLE column_list)?
+        function_options
+
+function_name 
+    <- name
+
+function_arglist 
+    <- OPEN (function_arg (COMMA function_arg)*)? CLOSE
+
+function_arg 
+    <- argmode? argname? argtype ((EQUALS / DEFAULT) default_expr)?
+
+argmode 
+    <- IN / OUT/ INOUT / VARIADIC
+
+argname 
+    <- name 
+
+argtype 
+    <- type 
+
+default_expr 
+    <- expr
+
+column_list 
+    <- OPEN column (COMMA column)* CLOSE
+
+column 
+    <- column_name column_type
+
+column_name 
+    <- name
+
+column_type
+    <- type
+
+function_options
+    <- function_option+
+
+function_option
+    <- (LANGUAGE language 
+    / transform
+    / WINDOW 
+    / (IMMUTABLE / STABLE / VOLATILE)
+    / NOT? LEAKPROOF 
+    / (CALLED ON NULL INPUT / RETURNS NULL ON NULL INPUT / STRICT)
+    / (EXTERNAL? SECURITY INVOKER / EXTERNAL? SECURITY DEFINER) 
+    / PARALLEL (UNSAFE / RESTRICTED / SAFE)
+    / COST execution_cost
+    / ROWS result_rows
+    / SUPPORT support_function
+    / SET configuration_parameter (TO expression / EQUALS expression / FROM CURRENT)
+    / AS definition 
+    / AS obj_file COMMA link_symbol
+    #TODO: implement 'sql_body' from postgres documentation?
+    )
+
+
+transform 
+    <- TRANSFORM transform_list 
+
+transform_list 
+    <- transformation (COMMA transformation)*
+
+transformation
+    <- FOR TYPE type 
+
+execution_cost
+    <- positive_real # TODO: zu 'expression' blackboxen (nervt aber beim testen)
+
+result_rows 
+    <- positive_real # TODO: zu 'expression' blackboxen (nervt aber beim testen)
+
+support_function
+    <- function_name
+
+configuration_parameter
+    <- parameter_name
+
+obj_file
+    <- name 
+
+link_symbol 
+    <- name
+
+# -------------------------
+# Identifiers, Types and Expressions
+# -------------------------
+
+name
+    <- identifier
 
 identifier 
     <- (quoted_id / id) Spacing
@@ -79,6 +181,17 @@ idStart
 idChars 
     <- [a-zA-Z0-9_]
 
+positive_real 
+    <- [0-9]+ ('.' [0-9]*)? Spacing  
+
+expression 
+    <- blackbox
+
+type 
+    <- blackbox 
+
+
+
 
 # --------------------------
 # PLPGSQL Keywords
@@ -86,7 +199,12 @@ idChars
 
 keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / AS 
 / SECURITY / INVOKER / DEFINER / SET / CALL / IN / OUT 
-/ INOUT / BEGIN / END / DECLARE
+/ INOUT / BEGIN / END / DECLARE / FUNCTION / OR / REPLACE
+/ RETURNS / TABLE / VARIADIC / TRANSFORM / FOR / TYPE
+/ WINDOW / IMMUTABLE / STABLE / VOLATILE / NOT
+/ LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
+/ EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
+/ TO / FROM / CURRENT / UNSAFE / RESTRICTED
 
 CREATE      <- 'CREATE' keysep
 PROCEDURE   <- 'PROCEDURE' keysep 
@@ -104,6 +222,37 @@ INOUT       <- 'INOUT' keysep
 BEGIN       <- 'BEGIN' keysep 
 END         <- 'END' keysep
 DECLARE     <- 'DECLARE' keysep
+FUNCTION    <- 'FUNCTION' keysep
+OR          <- 'OR' keysep 
+REPLACE     <- 'REPLACE' keysep
+RETURNS     <- 'RETURNS' keysep
+TABLE       <- 'TABLE' keysep
+VARIADIC    <- 'VARIADIC' keysep
+TRANSFORM   <- 'TRANSFORM' keysep
+FOR         <- 'FOR' keysep 
+TYPE        <- 'TYPE' keysep
+WINDOW      <- 'WINDOW' keysep
+IMMUTABLE   <- 'IMMUTABLE' keysep 
+STABLE      <- 'STABLE' keysep 
+VOLATILE    <- 'VOLATILE' keysep
+NOT         <- 'NOT' keysep 
+LEAKPROOF   <- 'LEAKPROOF' keysep 
+CALLED      <- 'CALLED' keysep
+ON          <- 'ON' keysep
+NULL        <- 'NULL' keysep 
+INPUT       <- 'INPUT' keysep 
+STRICT      <- 'STRICT' keysep 
+EXTERNAL    <- 'EXTERNAL' keysep
+PARALLEL    <- 'PARALLEL' keysep 
+COST        <- 'COST' keysep 
+ROWS        <- 'ROWS' keysep 
+SUPPORT     <- 'SUPPORT' keysep 
+TO          <- 'TO' keysep 
+FROM        <- 'FROM' keysep 
+CURRENT     <- 'CURRENT' keysep 
+UNSAFE      <- 'UNSAFE' keysep
+RESTRICTED  <- 'RESTRICTED' keysep
+SAFE        <- 'SAFE' keysep
 
 language 
     <- PLPGSQL
@@ -123,6 +272,7 @@ COMMA <- ',' Spacing
 DOLLAR <- '$' Spacing
 DOUBLE_DOLLAR <- '$$' Spacing
 ASSIGN <- ':=' Spacing
+EQUALS  <- '=' Spacing
 
 # -------------------------
 # Whitespace, Comments and Aux
@@ -183,9 +333,5 @@ assignment
 plsql_statment 
     <- blackbox
 
-expression 
-    <- blackbox
 
-type 
-    <- blackbox 
 
