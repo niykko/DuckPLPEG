@@ -1,5 +1,5 @@
 # ====================================================================================
-# PL/SQL PEG Grammar 
+# PL/pgSQL PEG Grammar 
 # ====================================================================================
 
 # ---- Top-level statement - This is the entry point ----
@@ -8,15 +8,15 @@ test
     <- program
 
 program
-    <- Spacing plpgsql_statement EndOfFile
+    <- Spacing postgresql_statement EndOfFile
 
-plpgsql_statement
+postgresql_statement
     <- (call_statement
     / create_function) SEP
 
 
 # +++++++++++++++++++++++++
-# PLPGSQL Statements 
+# PostgreSQL Statements
 # +++++++++++++++++++++++++
 
 # -------------------------
@@ -92,23 +92,22 @@ function_options
 
 function_option
     <- (LANGUAGE language 
-    / transform
+    / transform_option
     / WINDOW 
-    / (IMMUTABLE / STABLE / VOLATILE)
-    / NOT? LEAKPROOF 
-    / (CALLED ON NULL INPUT / RETURNS NULL ON NULL INPUT / STRICT)
-    / (EXTERNAL? SECURITY INVOKER / EXTERNAL? SECURITY DEFINER) 
-    / PARALLEL (UNSAFE / RESTRICTED / SAFE)
+    / volatility_option
+    / leakproof_option
+    / nullinput_option
+    / security_option
+    / parallel_option
     / COST execution_cost
     / ROWS result_rows
     / SUPPORT support_function
-    / SET configuration_parameter (TO expression / EQUALS expression / FROM CURRENT)
-    / AS definition 
-    / AS obj_file COMMA link_symbol
+    / set_option
+    / AS definition
     #TODO: implement 'sql_body' from postgres documentation?
     )
 
-transform 
+transform_option
     <- TRANSFORM transform_list 
 
 transform_list 
@@ -116,6 +115,24 @@ transform_list
 
 transformation
     <- FOR TYPE type 
+
+volatility_option
+    <- IMMUTABLE / STABLE / VOLATILE
+
+leakproof_option
+    <- NOT? LEAKPROOF 
+
+nullinput_option
+    <- CALLED ON NULL INPUT / RETURNS NULL ON NULL INPUT / STRICT
+
+security_option 
+    <- EXTERNAL? SECURITY INVOKER / EXTERNAL? SECURITY DEFINER
+
+parallel_option
+    <- PARALLEL (UNSAFE / RESTRICTED / SAFE)
+
+set_option 
+    <- SET configuration_parameter (TO expression / EQUALS expression / FROM CURRENT)
 
 execution_cost
     <- positive_real # TODO: zu 'expression' blackboxen (nervt aber beim testen)
@@ -133,7 +150,7 @@ parameter_name
     <- identifier
 
 definition 
-    <- block_start plsql_block block_end 
+    <- block_start plpgsql_block block_end 
 
 block_start
     <- DOUBLE_DOLLAR
@@ -186,7 +203,7 @@ number
 
 
 # --------------------------
-# PLPGSQL Keywords
+# Keywords
 # --------------------------
 
 keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / AS 
@@ -252,8 +269,6 @@ C           <- 'c' keysep / 'C' keysep
 
 language 
     <- PLPGSQL
-    / SQL
-    / C
     / 'other potential language'
 
 # --------------------------
@@ -300,10 +315,10 @@ blackbox
 
 
 # ====================================================================================
-# PL/SQL
+# PL/pgSQL
 # ====================================================================================
 
-plsql_block
+plpgsql_block
     <- blackbox
 
 
