@@ -256,8 +256,6 @@ SAFE        <- 'SAFE' keysep / 'safe' keysep / 'Safe' keysep
 DEFAULT     <- 'DEFAULT' keysep / 'default' keysep / 'Default' keysep
 
 PLPGSQL     <- 'plpgsql' keysep / 'PLPGSQL' keysep
-SQL         <- 'sql' keysep / 'SQL' keysep / 'Sql' keysep
-C           <- 'c' keysep / 'C' keysep
 
 language 
     <- PLPGSQL
