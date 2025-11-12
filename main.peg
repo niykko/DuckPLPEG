@@ -27,7 +27,7 @@ call_statement
     <- CALL statement_name argument_list SEP
 
 statement_name 
-    <- name
+    <- function_name / procedure_name
 
 argument_list
     <- OPEN argument (COMMA argument)* CLOSE
@@ -35,14 +35,6 @@ argument_list
 argument
     <- identifier 
     / expression 
-
-
-# -------------------------
-# CREATE PROCEDURE Statement
-# -------------------------
-
-
-
 
 # -------------------------
 # CREATE FUNCTION Statement
@@ -156,6 +148,28 @@ block_start
     
 block_end
     <- DOUBLE_DOLLAR
+
+
+# -------------------------
+# CREATE PROCEDURE Statement
+# -------------------------
+
+
+create_procedure
+    <-  CREATE (OR REPLACE)? PROCEDURE procedure_name function_arglist
+        procedure_options
+
+procedure_name 
+    <- name
+
+procedure_options
+    <- procedure_option+
+
+procedure_option
+    <- transform_option
+    / security_option
+    / set_option
+    / AS definition
 
 # -------------------------
 # Identifiers, Types and Expressions
