@@ -1,16 +1,16 @@
-CREATE FUNCTION f1() RETURNS integer AS $$ $blackbox$ $$ LANGUAGE sql;
+CREATE FUNCTION f1() RETURNS integer AS $$ $blackbox$ $$ LANGUAGE plpgsql;
 
 
 --------------------------------------------------------------------------------
 
 
-CREATE OR REPLACE FUNCTION f2() RETURNS text AS $$ $blackbox$ $$ LANGUAGE sql;
+CREATE OR REPLACE FUNCTION f2() RETURNS text AS $$ $blackbox$ $$ LANGUAGE plpgsql;
 
 
 --------------------------------------------------------------------------------
 
 
-CREATE FUNCTION f3(OUT result int) AS $$ $blackbox$ $$ LANGUAGE sql;
+CREATE FUNCTION f3(OUT result int) AS $$ $blackbox$ $$ LANGUAGE plpgsql;
 
 
 --------------------------------------------------------------------------------
@@ -26,19 +26,9 @@ $$ LANGUAGE plpgsql;
 --------------------------------------------------------------------------------
 
 
-CREATE FUNCTION f5()
-RETURNS integer
-TRANSFORM FOR TYPE json, FOR TYPE xml
-LANGUAGE c
-AS "func.so", "symbolname";
-
-
---------------------------------------------------------------------------------
-
-
 CREATE FUNCTION f6(a int)
 RETURNS int
-LANGUAGE sql
+LANGUAGE plpgsql
 IMMUTABLE
 LEAKPROOF
 CALLED ON NULL INPUT
@@ -63,7 +53,7 @@ AS $$ $blackbox$ $$;
 
 CREATE FUNCTION f8(x int DEFAULT 5, y int = 10)
 RETURNS int
-LANGUAGE sql
+LANGUAGE plpgsql
 AS $$ $blackbox$ $$;
 
 
@@ -94,4 +84,4 @@ $$;
 
 create    function   "F12" (x int)
 returns   int
-as  $$ $blackbox$ $$  language  SQL  ;
+as  $$ $blackbox$ $$  language  PLPGSQL  ;
