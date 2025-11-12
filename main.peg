@@ -1,5 +1,5 @@
 # ====================================================================================
-# PostgreSQL SQL PEG Grammar 
+# PEG Grammar for 'some language, idk anymore'
 # ====================================================================================
 
 # ---- Top-level statement - This is the entry point ----
@@ -11,30 +11,8 @@ program
     <- Spacing postgresql_statement EndOfFile
 
 postgresql_statement
-    <- (call_statement
-    / create_function) SEP
+    <- (create_function / create_procedure) SEP
 
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# PostgreSQL Statements
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-# ------------------------------------------------------------------------------------
-# CALL Statement
-# ------------------------------------------------------------------------------------
-
-call_statement
-    <- CALL statement_name argument_list SEP
-
-statement_name 
-    <- function_name / procedure_name
-
-argument_list
-    <- OPEN argument (COMMA argument)* CLOSE
-
-argument
-    <- identifier 
-    / expression 
 
 
 # ------------------------------------------------------------------------------------
@@ -177,7 +155,10 @@ procedure_option
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 plpgsql_block
-    <- blackbox
+    <- label? declare_section? BEGIN plpgsql_statement_list END label? SEP 
+
+label 
+    <- LSHIFT name RSHIFT   # TODO: note that <<   blubb   >> will have the name 'blubb' without spaces
 
 
 # ------------------------------------------------------------------------------------
@@ -292,14 +273,17 @@ language
 keysep 
     <- !idChars Spacing
 
-SEP <- ';' Spacing
-OPEN <- '(' Spacing
-CLOSE <- ')' Spacing 
-COMMA <- ',' Spacing
-DOLLAR <- '$' Spacing
-DOUBLE_DOLLAR <- '$$' Spacing
-ASSIGN <- ':=' Spacing
+SEP     <- ';' Spacing
+OPEN    <- '(' Spacing
+CLOSE   <- ')' Spacing 
+COMMA   <- ',' Spacing
+DOLLAR  <- '$' Spacing
+DOUBLE_DOLLAR 
+        <- '$$' Spacing
+ASSIGN  <- ':=' Spacing
 EQUALS  <- '=' Spacing
+LSHIFT  <- '<<' Spacing
+RSHIFT  <- '>>' Spacing
 
 
 # ------------------------------------------------------------------------------------
