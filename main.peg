@@ -104,7 +104,6 @@ function_option
     / SUPPORT support_function
     / set_option
     / AS definition
-    #TODO: implement 'sql_body' from postgres documentation?
     )
 
 transform_option
@@ -157,13 +156,6 @@ block_start
     
 block_end
     <- DOUBLE_DOLLAR
-
-obj_file
-    <- quoted_id Spacing    # TODO: potentially use single quotes here
-
-link_symbol 
-    <- quoted_id Spacing    # TODO: potentially use single quotes here
-
 
 # -------------------------
 # Identifiers, Types and Expressions
