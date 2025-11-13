@@ -19,18 +19,18 @@ postgresql_statement
 # ------------------------------------------------------------------------------------
 
 create_function
-    <-  CREATE (OR REPLACE)? FUNCTION function_name function_arglist
-        (RETURNS type 
+    <-  CREATE (OR REPLACE)? FUNCTION function_name create_function_arglist
+        (RETURNS SETOF? type 
         / RETURNS TABLE column_list)?
         function_options
 
 function_name 
     <- name
 
-function_arglist 
-    <- OPEN (function_arg (COMMA function_arg)*)? CLOSE
+create_function_arglist 
+    <- OPEN (create_function_arg (COMMA create_function_arg)*)? CLOSE
 
-function_arg 
+create_function_arg 
     <- argmode? argname? argtype ((EQUALS / DEFAULT) default_expr)?
 
 argmode 
@@ -133,7 +133,7 @@ block_end
 # ------------------------------------------------------------------------------------
 
 create_procedure
-    <-  CREATE (OR REPLACE)? PROCEDURE procedure_name function_arglist
+    <-  CREATE (OR REPLACE)? PROCEDURE procedure_name create_function_arglist
         procedure_options
 
 procedure_name 
@@ -189,6 +189,8 @@ plpgsql_statement
     / assignment_statement
     / execute_statement
     / null_statement
+    / return_statement 
+    / call_statement
 
 sql_command
     <- blackbox             # TODO: let duckdb handle this
@@ -208,8 +210,23 @@ execute_target
 expressions 
     <- expression (COMMA expression)*
 
-null_satement 
-    <- NULL
+null_statement 
+    <- NULL SEP
+
+return_statement 
+    <- RETURN NEXT expression SEP
+    / RETURN QUERY (sql_command / execute_statement) SEP
+    / RETURN expression SEP
+
+call_statement
+    <- CALL (function_name / procedure_name) function_arglist SEP 
+
+function_arglist 
+    <- OPEN (variable REQUALS function_arg (COMMA variable REQUALS function_arg)*)? CLOSE
+    / OPEN (function_arg (COMMA function_arg)*)? CLOSE
+
+function_arg
+    <- expression
 
 
 # ------------------------------------------------------------------------------------
@@ -259,12 +276,13 @@ number
 keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY 
         / INVOKER / DEFINER / SET / CALL / IN / OUT 
         / INOUT / BEGIN / END / DECLARE / FUNCTION / OR / REPLACE
-        / RETURNS / TABLE / VARIADIC / TRANSFORM / FOR / TYPE
+        / RETURN / RETURNS / TABLE / VARIADIC / TRANSFORM / FOR / TYPE
         / WINDOW / IMMUTABLE / STABLE / VOLATILE / NOT
         / LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
         / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
-        / CONSTANT / PLPGSQL / COLLATE / EXECUTE 
+        / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
+        / SETOF
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -285,6 +303,7 @@ DECLARE     <- [Dd] [Ee] [Cc] [Ll] [Aa] [Rr] [Ee] keysep
 FUNCTION    <- [Ff] [Uu] [Nn] [Cc] [Tt] [Ii] [Oo] [Nn] keysep
 OR          <- [Oo] [Rr] keysep
 REPLACE     <- [Rr] [Ee] [Pp] [Ll] [Aa] [Cc] [Ee] keysep
+RETURN     <- [Rr] [Ee] [Tt] [Uu] [Rr] [Nn] keysep
 RETURNS     <- [Rr] [Ee] [Tt] [Uu] [Rr] [Nn] [Ss] keysep
 TABLE       <- [Tt] [Aa] [Bb] [Ll] [Ee] keysep
 VARIADIC    <- [Vv] [Aa] [Rr] [Ii] [Aa] [Dd] [Ii] [Cc] keysep
@@ -320,8 +339,9 @@ COLLATE     <- [Cc] [Oo] [Ll] [Ll] [Aa] [Tt] [Ee] keysep
 EXECUTE     <- [Ee] [Xx] [Ee] [Cc] [Uu] [Tt] [Ee] keysep
 INTO        <- [Ii] [Nn] [Tt] [Oo] keysep
 USING       <- [Uu] [Ss] [Ii] [Nn] [Gg] keysep
-GET         <- [Gg] [Ee] [Tt] keysep
-DIAGNOSTICS <- [Dd] [Ii] [Aa] [Gg] [Nn] [Oo] [Ss] [Tt] [Ii] [Cc] [Ss] keysep
+NEXT        <- [Nn] [Ee] [Xx] [Tt] keysep
+QUERY       <- [Qq] [Uu] [Ee] [Rr] [Yy] keysep
+SETOF       <- [Ss] [Ee] [Tt] [Oo] [Ff] keysep
 
 language 
     <- PLPGSQL
@@ -346,6 +366,7 @@ ASSIGN  <- ':=' Spacing
 EQUALS  <- '=' Spacing
 LSHIFT  <- '<<' Spacing
 RSHIFT  <- '>>' Spacing
+REQUALS <- '=>' Spacing
 
 
 # ------------------------------------------------------------------------------------
