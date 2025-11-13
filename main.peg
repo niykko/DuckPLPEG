@@ -209,57 +209,58 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / AS
 / WINDOW / IMMUTABLE / STABLE / VOLATILE / NOT
 / LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
 / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
-/ TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT
+/ TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT / CONSTANT
 
-CREATE      <- 'CREATE' keysep / 'create' keysep / 'Create' keysep
-PROCEDURE   <- 'PROCEDURE' keysep / 'procedure' keysep / 'Procedure' keysep
-LANGUAGE    <- 'LANGUAGE' keysep / 'language' keysep / 'Language' keysep
-AS          <- 'AS' keysep / 'as' keysep / 'As' keysep
-SECURITY    <- 'SECURITY' keysep / 'security' keysep
-INVOKER     <- 'INVOKER' keysep / 'invoker' keysep / 'Invoker' keysep
-DEFINER     <- 'DEFINER' keysep / 'definer' keysep / 'Definer' keysep
-SET         <- 'SET' keysep  / 'set' keysep / 'Set' keysep
-CALL        <- 'CALL' keysep / 'call' keysep / 'Call' keysep
-IN          <- 'IN' keysep / 'in' keysep / 'In' keysep
-OUT         <- 'OUT' keysep / 'out' keysep / 'Out' keysep
-INOUT       <- 'INOUT' keysep / 'inout' keysep / 'Inout' keysep
-BEGIN       <- 'BEGIN' keysep / 'begin' keysep / 'Begin' keysep
-END         <- 'END' keysep / 'end' keysep / 'End' keysep
-DECLARE     <- 'DECLARE' keysep / 'declare' keysep / 'Declare' keysep
-FUNCTION    <- 'FUNCTION' keysep / 'function' keysep / 'Function' keysep
-OR          <- 'OR' keysep / 'or' keysep / 'Or' keysep
-REPLACE     <- 'REPLACE' keysep / 'replace' keysep / 'Replace' keysep
-RETURNS     <- 'RETURNS' keysep / 'returns' keysep / 'Returns' keysep
-TABLE       <- 'TABLE' keysep / 'table' keysep / 'Table' keysep
-VARIADIC    <- 'VARIADIC' keysep / 'variadic' keysep / 'Variadic' keysep
-TRANSFORM   <- 'TRANSFORM' keysep / 'transform' keysep / 'Transform' keysep
-FOR         <- 'FOR' keysep / 'for' keysep / 'For' keysep
-TYPE        <- 'TYPE' keysep / 'type' keysep / 'Type' keysep
-WINDOW      <- 'WINDOW' keysep / 'window' keysep / 'Window' keysep
-IMMUTABLE   <- 'IMMUTABLE' keysep / 'immutable' keysep / 'Immutable' keysep
-STABLE      <- 'STABLE' keysep / 'stable' keysep / 'Stable' keysep
-VOLATILE    <- 'VOLATILE' keysep / 'volatile' keysep / 'Volatile' keysep
-NOT         <- 'NOT' keysep / 'not' keysep / 'Not' keysep
-LEAKPROOF   <- 'LEAKPROOF' keysep / 'leakproof' keysep / 'Leakproof' keysep
-CALLED      <- 'CALLED' keysep / 'called' keysep / 'Called' keysep
-ON          <- 'ON' keysep / 'on' keysep / 'On' keysep
-NULL        <- 'NULL' keysep / 'null' keysep / 'Null' keysep
-INPUT       <- 'INPUT' keysep / 'input' keysep / 'Input' keysep
-STRICT      <- 'STRICT' keysep / 'strict' keysep / 'Strict' keysep
-EXTERNAL    <- 'EXTERNAL' keysep / 'external' keysep / 'External' keysep
-PARALLEL    <- 'PARALLEL' keysep / 'parallel' keysep / 'Parallel' keysep
-COST        <- 'COST' keysep / 'cost' keysep / 'Cost' keysep
-ROWS        <- 'ROWS' keysep / 'rows' keysep / 'Rows' keysep
-SUPPORT     <- 'SUPPORT' keysep / 'support' keysep / 'Support' keysep
-TO          <- 'TO' keysep / 'to' keysep / 'To' keysep
-FROM        <- 'FROM' keysep / 'from' keysep / 'From' keysep
-CURRENT     <- 'CURRENT' keysep / 'current' keysep / 'Current' keysep
-UNSAFE      <- 'UNSAFE' keysep / 'unsafe' keysep
-RESTRICTED  <- 'RESTRICTED' keysep / 'restricted' keysep
-SAFE        <- 'SAFE' keysep / 'safe' keysep / 'Safe' keysep
-DEFAULT     <- 'DEFAULT' keysep / 'default' keysep / 'Default' keysep
 
-PLPGSQL     <- 'plpgsql' keysep / 'PLPGSQL' keysep
+CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
+PROCEDURE   <- [Pp] [Rr] [Oo] [Cc] [Ee] [Dd] [Uu] [Rr] [Ee] keysep
+LANGUAGE    <- [Ll] [Aa] [Nn] [Gg] [Uu] [Aa] [Gg] [Ee] keysep
+AS          <- [Aa] [Ss] keysep
+SECURITY    <- [Ss] [Ee] [Cc] [Uu] [Rr] [Ii] [Tt] [Yy] keysep
+INVOKER     <- [Ii] [Nn] [Vv] [Oo] [Kk] [Ee] [Rr] keysep
+DEFINER     <- [Dd] [Ee] [Ff] [Ii] [Nn] [Ee] [Rr] keysep
+SET         <- [Ss] [Ee] [Tt] keysep
+CALL        <- [Cc] [Aa] [Ll] [Ll] keysep
+IN          <- [Ii] [Nn] keysep
+OUT         <- [Oo] [Uu] [Tt] keysep
+INOUT       <- [Ii] [Nn] [Oo] [Uu] [Tt] keysep
+BEGIN       <- [Bb] [Ee] [Gg] [Ii] [Nn] keysep
+END         <- [Ee] [Nn] [Dd] keysep
+DECLARE     <- [Dd] [Ee] [Cc] [Ll] [Aa] [Rr] [Ee] keysep
+FUNCTION    <- [Ff] [Uu] [Nn] [Cc] [Tt] [Ii] [Oo] [Nn] keysep
+OR          <- [Oo] [Rr] keysep
+REPLACE     <- [Rr] [Ee] [Pp] [Ll] [Aa] [Cc] [Ee] keysep
+RETURNS     <- [Rr] [Ee] [Tt] [Uu] [Rr] [Nn] [Ss] keysep
+TABLE       <- [Tt] [Aa] [Bb] [Ll] [Ee] keysep
+VARIADIC    <- [Vv] [Aa] [Rr] [Ii] [Aa] [Dd] [Ii] [Cc] keysep
+TRANSFORM   <- [Tt] [Rr] [Aa] [Nn] [Ss] [Ff] [Oo] [Rr] [Mm] keysep
+FOR         <- [Ff] [Oo] [Rr] keysep
+TYPE        <- [Tt] [Yy] [Pp] [Ee] keysep
+WINDOW      <- [Ww] [Ii] [Nn] [Dd] [Oo] [Ww] keysep
+IMMUTABLE   <- [Ii] [Mm] [Mm] [Uu] [Tt] [Aa] [Bb] [Ll] [Ee] keysep
+STABLE      <- [Ss] [Tt] [Aa] [Bb] [Ll] [Ee] keysep
+VOLATILE    <- [Vv] [Oo] [Ll] [Aa] [Tt] [Ii] [Ll] [Ee] keysep
+NOT         <- [Nn] [Oo] [Tt] keysep
+LEAKPROOF   <- [Ll] [Ee] [Aa] [Kk] [Pp] [Rr] [Oo] [Oo] [Ff] keysep
+CALLED      <- [Cc] [Aa] [Ll] [Ll] [Ee] [Dd] keysep
+ON          <- [Oo] [Nn] keysep
+NULL        <- [Nn] [Uu] [Ll] [Ll] keysep
+INPUT       <- [Ii] [Nn] [Pp] [Uu] [Tt] keysep
+STRICT      <- [Ss] [Tt] [Rr] [Ii] [Cc] [Tt] keysep
+EXTERNAL    <- [Ee] [Xx] [Tt] [Ee] [Rr] [Nn] [Aa] [Ll] keysep
+PARALLEL    <- [Pp] [Aa] [Rr] [Aa] [Ll] [Ll] [Ee] [Ll] keysep
+COST        <- [Cc] [Oo] [Ss] [Tt] keysep
+ROWS        <- [Rr] [Oo] [Ww] [Ss] keysep
+SUPPORT     <- [Ss] [Uu] [Pp] [Pp] [Oo] [Rr] [Tt] keysep
+TO          <- [Tt] [Oo] keysep
+FROM        <- [Ff] [Rr] [Oo] [Mm] keysep
+CURRENT     <- [Cc] [Uu] [Rr] [Rr] [Ee] [Nn] [Tt] keysep
+UNSAFE      <- [Uu] [Nn] [Ss] [Aa] [Ff] [Ee] keysep
+RESTRICTED  <- [Rr] [Ee] [Ss] [Tt] [Rr] [Ii] [Cc] [Tt] [Ee] [Dd] keysep
+SAFE        <- [Ss] [Aa] [Ff] [Ee] keysep
+DEFAULT     <- [Dd] [Ee] [Ff] [Aa] [Uu] [Ll] [Tt] keysep
+CONSTANT    <- [Cc] [Oo] [Nn] [Ss] [Tt] [Aa] [Nn] [Tt] keysep
+PLPGSQL     <- [Pp] [Ll] [Pp] [Gg] [Ss] [Qq] [Ll] keysep
 
 language 
     <- PLPGSQL
