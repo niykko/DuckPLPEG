@@ -191,6 +191,7 @@ plpgsql_statement
     / null_statement
     / return_statement 
     / call_statement
+    / if_statement 
 
 sql_command
     <- blackbox             # TODO: let duckdb handle this
@@ -227,6 +228,13 @@ function_arglist
 
 function_arg
     <- expression
+
+if_statement
+    <- IF expression THEN plpgsql_statement+ 
+    (ELSIF expression THEN plpgsql_statement+)*
+    (ELSE plpgsql_statement+)?
+    END IF SEP
+
 
 
 # ------------------------------------------------------------------------------------
@@ -282,7 +290,7 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY
         / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
         / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
-        / SETOF
+        / SETOF / IF / THEN / ELSE / ELSIF
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -342,6 +350,10 @@ USING       <- [Uu] [Ss] [Ii] [Nn] [Gg] keysep
 NEXT        <- [Nn] [Ee] [Xx] [Tt] keysep
 QUERY       <- [Qq] [Uu] [Ee] [Rr] [Yy] keysep
 SETOF       <- [Ss] [Ee] [Tt] [Oo] [Ff] keysep
+IF          <- [Ii] [Ff] keysep
+THEN        <- [Tt] [Hh] [Ee] [Nn] keysep
+ELSE        <- [Ee] [Ll] [Ss] [Ee] keysep
+ELSIF       <- [Ee] [Ll] [Ss] [Ii] [Ff] keysep
 
 language 
     <- PLPGSQL
