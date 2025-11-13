@@ -14,7 +14,6 @@ postgresql_statement
     <- (create_function / create_procedure) SEP
 
 
-
 # ------------------------------------------------------------------------------------
 # CREATE FUNCTION Statement
 # ------------------------------------------------------------------------------------
@@ -120,7 +119,7 @@ parameter_name
     <- identifier
 
 definition 
-    <- block_start plpgsql_block block_end 
+    <- block_start plpgsql_outer_block block_end 
 
 block_start
     <- DOUBLE_DOLLAR
@@ -154,13 +153,35 @@ procedure_option
 # PL/pgSQL Statements
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-plpgsql_block
-    <- label? declare_section? BEGIN plpgsql_statement_list END label? SEP 
+plpgsql_outer_block
+    <- shift_label? declare_section? BEGIN plpgsql_statement_list END label? SEP? 
 
-label 
+shift_label 
     <- LSHIFT name RSHIFT   # TODO: note that <<   blubb   >> will have the name 'blubb' without spaces
 
+label 
+    <- name
 
+declare_section
+    <- DECLARE declaration+
+
+declaration
+    <- name CONSTANT? type collation? (NOT NULL)? assignment? SEP
+
+collation 
+    <- COLLATE collation_name 
+
+collation_name
+    <- name
+
+assignment 
+    <- assign expression
+
+assign 
+    <- DEFAULT / ASSIGN / EQUALS
+
+plpgsql_statement_list
+    <- any
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
 # ------------------------------------------------------------------------------------
@@ -266,7 +287,7 @@ COLLATE     <- [Cc] [Oo] [Ll] [Ll] [Aa] [Tt] [Ee] keysep
 
 language 
     <- PLPGSQL
-    / 'other potential language'
+    / 'other potential language'    # TODO: do we have other potential languages?
 
 
 # ------------------------------------------------------------------------------------
