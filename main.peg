@@ -202,14 +202,15 @@ number
 # Keywords
 # ------------------------------------------------------------------------------------
 
-keyword <- CREATE / PROCEDURE / LANGUAGE / PLPGSQL / AS 
-/ SECURITY / INVOKER / DEFINER / SET / CALL / IN / OUT 
-/ INOUT / BEGIN / END / DECLARE / FUNCTION / OR / REPLACE
-/ RETURNS / TABLE / VARIADIC / TRANSFORM / FOR / TYPE
-/ WINDOW / IMMUTABLE / STABLE / VOLATILE / NOT
-/ LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
-/ EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
-/ TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT / CONSTANT
+keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY 
+        / INVOKER / DEFINER / SET / CALL / IN / OUT 
+        / INOUT / BEGIN / END / DECLARE / FUNCTION / OR / REPLACE
+        / RETURNS / TABLE / VARIADIC / TRANSFORM / FOR / TYPE
+        / WINDOW / IMMUTABLE / STABLE / VOLATILE / NOT
+        / LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
+        / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
+        / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
+        / CONSTANT / PLPGSQL / COLLATE
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -261,6 +262,7 @@ SAFE        <- [Ss] [Aa] [Ff] [Ee] keysep
 DEFAULT     <- [Dd] [Ee] [Ff] [Aa] [Uu] [Ll] [Tt] keysep
 CONSTANT    <- [Cc] [Oo] [Nn] [Ss] [Tt] [Aa] [Nn] [Tt] keysep
 PLPGSQL     <- [Pp] [Ll] [Pp] [Gg] [Ss] [Qq] [Ll] keysep
+COLLATE     <- [Cc] [Oo] [Ll] [Ll] [Aa] [Tt] [Ee] keysep
 
 language 
     <- PLPGSQL
