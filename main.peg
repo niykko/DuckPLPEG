@@ -150,11 +150,11 @@ procedure_option
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# PL/pgSQL Statements
+# PL/pgSQL
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 plpgsql_outer_block
-    <- shift_label? declare_section? BEGIN plpgsql_statement_list END label? SEP? 
+    <- shift_label? declare_section? BEGIN plpgsql_statement+ END label? SEP? 
 
 shift_label 
     <- LSHIFT name RSHIFT   # TODO: note that <<   blubb   >> will have the name 'blubb' without spaces
@@ -166,7 +166,7 @@ declare_section
     <- DECLARE declaration+
 
 declaration
-    <- name CONSTANT? type collation? (NOT NULL)? assignment? SEP
+    <- variable CONSTANT? type collation? (NOT NULL)? declaration_assignment? SEP
 
 collation 
     <- COLLATE collation_name 
@@ -174,17 +174,50 @@ collation
 collation_name
     <- name
 
-assignment 
-    <- assign expression
+declaration_assignment 
+    <- (DEFAULT / assign) expression
 
 assign 
-    <- DEFAULT / ASSIGN / EQUALS
+    <- ASSIGN / EQUALS
 
-plpgsql_statement_list
-    <- any
+# ------------------------------------------------------------------------------------
+# PL/pgSQL Statements
+# ------------------------------------------------------------------------------------
+
+plpgsql_statement
+    <- sql_command
+    / assignment_statement
+    / execute_statement
+    / null_statement
+
+sql_command
+    <- blackbox             # TODO: let duckdb handle this
+
+assignment_statement
+    <- variable assign expression SEP 
+
+execute_statement
+    <- EXECUTE commandstring (INTO STRICT? execute_target)? (USING expressions) SEP
+    
+commandstring
+    <- expression             # TODO: Special expression that returns a string of type text
+
+execute_target
+    <- variable (COMMA variable)*
+
+expressions 
+    <- expression (COMMA expression)*
+
+null_satement 
+    <- NULL
+
+
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
 # ------------------------------------------------------------------------------------
+
+variable 
+    <- identifier
 
 name
     <- identifier
@@ -231,7 +264,7 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY
         / LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
         / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
-        / CONSTANT / PLPGSQL / COLLATE
+        / CONSTANT / PLPGSQL / COLLATE / EXECUTE 
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -284,6 +317,11 @@ DEFAULT     <- [Dd] [Ee] [Ff] [Aa] [Uu] [Ll] [Tt] keysep
 CONSTANT    <- [Cc] [Oo] [Nn] [Ss] [Tt] [Aa] [Nn] [Tt] keysep
 PLPGSQL     <- [Pp] [Ll] [Pp] [Gg] [Ss] [Qq] [Ll] keysep
 COLLATE     <- [Cc] [Oo] [Ll] [Ll] [Aa] [Tt] [Ee] keysep
+EXECUTE     <- [Ee] [Xx] [Ee] [Cc] [Uu] [Tt] [Ee] keysep
+INTO        <- [Ii] [Nn] [Tt] [Oo] keysep
+USING       <- [Uu] [Ss] [Ii] [Nn] [Gg] keysep
+GET         <- [Gg] [Ee] [Tt] keysep
+DIAGNOSTICS <- [Dd] [Ii] [Aa] [Gg] [Nn] [Oo] [Ss] [Tt] [Ii] [Cc] [Ss] keysep
 
 language 
     <- PLPGSQL
