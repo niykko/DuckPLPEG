@@ -1,0 +1,4 @@
+CALL somefunc(a => 5, b => wallah);
+CALL somefunc(a,b,c,  
+
+d);
