@@ -156,6 +156,9 @@ procedure_option
 plpgsql_outer_block
     <- shift_label? declare_section? BEGIN plpgsql_statement+ END label? SEP? 
 
+plpgsql_inner_block
+    <- shift_label? declare_section? BEGIN plpgsql_statement+ END label? SEP
+
 shift_label 
     <- LSHIFT name RSHIFT   # TODO: note that <<   blubb   >> will have the name 'blubb' without spaces
 
