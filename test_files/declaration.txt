@@ -1,0 +1,11 @@
+a int = 5;
+"   b"  int;
+c string DEFAULT schtring;
+deh cooltype 
+
+
+
+DEFAULT 
+
+
+cool;
