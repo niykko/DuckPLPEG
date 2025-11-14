@@ -214,9 +214,6 @@ execute_statement
 commandstring
     <- expression             # TODO: Special expression that returns a string of type text
 
-execute_target
-    <- variable (COMMA variable)*
-
 expressions 
     <- expression (COMMA expression)*
 
@@ -274,6 +271,9 @@ while_statement
 
 variable 
     <- identifier
+
+variables
+    <- variable (COMMA variable)*
 
 name
     <- identifier
