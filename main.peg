@@ -196,6 +196,7 @@ plpgsql_statement
     / call_statement
     / if_statement 
     / case_statement
+    / searched_case_statement
 
 sql_command
     <- blackbox             # TODO: let duckdb handle this
@@ -240,12 +241,19 @@ if_statement
     END IF SEP
 
 case_statement
-    <- CASE expression (WHEN expressions THEN plpgsql_statement+)+
+    <- CASE expression 
+    (WHEN expressions THEN plpgsql_statement+)+
     (ELSE plpgsql_statement+)?
     END CASE SEP
      
+searched_case_statement
+    <- CASE 
+    (WHEN boolexpr THEN plpgsql_statement+)+
+    (ELSE plpgsql_statement+)?
+    END CASE SEP
 
-
+boolexpr
+    <- expression      # TODO: Special expression that returns a boolean
 
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
