@@ -1,0 +1,87 @@
+CASE
+    WHEN boolexpr THEN
+        msg := 'greater than 10';
+        count := expr;
+    WHEN boolexpr THEN
+        msg := 'equal to 10';
+    WHEN boolexpr THEN
+        msg := 'negative value';
+        EXECUTE 'SELECT $1' INTO res USING x;
+    ELSE
+        msg := 'between 1 and 9';
+END CASE;
+
+
+CASE
+    WHEN boolexpr THEN
+        msg := 'active user';
+        CASE
+            WHEN boolexpr THEN
+                level := 'pro';
+            WHEN boolexpr THEN
+                level := 'intermediate';
+            ELSE
+                level := 'beginner';
+        END CASE;
+    WHEN boolexpr THEN
+        msg := 'blocked user';
+        attempts := expr;
+    ELSE
+        msg := 'unknown status';
+END CASE;
+
+CASE
+    WHEN boolexpr THEN
+        EXECUTE 'SELECT config_value FROM settings WHERE key = $1'
+            INTO config_val
+            USING setting_key;
+        result := config_val;
+    WHEN boolexpr THEN
+        CALL reset_settings();
+        msg := 'settings reset';
+    ELSE
+        msg := 'state undefined';
+        result := NULL;
+END CASE;
+
+CASE
+    WHEN expr THEN
+        msg := 'outer branch 1';
+
+        CASE
+            WHEN expr THEN
+                inner_msg := 'inner branch 1';
+                CASE
+                    WHEN expr THEN
+                        deep_msg := 'deep branch 1';
+                    WHEN expr THEN
+                        deep_msg := 'deep branch 2';
+                    ELSE
+                        deep_msg := 'deep else';
+                END CASE;
+            WHEN expr THEN
+                inner_msg := 'inner branch 2';
+            ELSE
+                inner_msg := 'inner else';
+        END CASE;
+
+    WHEN expr THEN
+        msg := 'outer branch 2';
+
+        CASE
+            WHEN expr THEN
+                nested_msg := 'nested branch';
+            ELSE
+                nested_msg := 'nested else';
+        END CASE;
+
+    ELSE
+        msg := 'outer else';
+
+        CASE
+            WHEN expr THEN
+                final_msg := 'final branch';
+            ELSE
+                final_msg := 'final else';
+        END CASE;
+END CASE;
