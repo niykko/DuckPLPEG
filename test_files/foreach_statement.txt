@@ -1,0 +1,22 @@
+<<process_array>>
+FOREACH element IN ARRAY my_array LOOP
+    CASE
+        WHEN expr THEN
+            status := 'active';
+        ELSE
+            status := 'inactive';
+    END CASE;
+
+    counter := 'update';
+END LOOP process_array;
+
+
+FOREACH pair SLICE 2 IN ARRAY my_array LOOP
+    first_elem := pair;
+    second_elem := pair;
+END LOOP;
+
+FOREACH item IN ARRAY my_array LOOP
+    counter := 'increment';
+    msg := 'processing item';
+END LOOP;
