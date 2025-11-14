@@ -154,10 +154,10 @@ procedure_option
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 plpgsql_outer_block
-    <- shift_label? declare_section? BEGIN plpgsql_statement+ END label? SEP? 
+    <- shift_label? declare_section? BEGIN plpgsql_statement+ exception? END label? SEP? 
 
 plpgsql_inner_block
-    <- shift_label? declare_section? BEGIN plpgsql_statement+ END label? SEP
+    <- shift_label? declare_section? BEGIN plpgsql_statement+ exception? END label? SEP
 
 shift_label 
     <- LSHIFT name RSHIFT   # TODO: note that <<   blubb   >> will have the name 'blubb' without spaces
@@ -182,6 +182,19 @@ declaration_assignment
 
 assign 
     <- ASSIGN / EQUALS
+
+exception 
+    <- EXCEPTION exception_handler+
+
+exception_handler
+    <- WHEN exception_conditions THEN plpgsql_statement+
+
+exception_conditions
+    <- exception_condition (OR exception_condition)*
+
+exception_condition
+    <- any                              # TODO: implement our exception conditions or use postgresql's?
+    # found here: https://www.postgresql.org/docs/18/errcodes-appendix.html (Appendix A)
 
 # ------------------------------------------------------------------------------------
 # PL/pgSQL Statements
@@ -416,6 +429,7 @@ BY          <- [Bb] [Yy] keysep
 FOREACH     <- [Ff] [Oo] [Rr] [Ee] [Aa] [Cc] [Hh] keysep
 ARRAY       <- [Aa] [Rr] [Rr] [Aa] [Yy] keysep
 SLICE       <- [Ss] [Ll] [Ii] [Cc] [Ee] keysep
+EXCEPTION   <- [Ee] [Xx] [Cc] [Ee] [Pp] [Tt] [Ii] [Oo] [Nn] keysep
 
 language 
     <- PLPGSQL

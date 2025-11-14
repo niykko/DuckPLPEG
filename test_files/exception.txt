@@ -1,0 +1,19 @@
+BEGIN
+    FOREACH pair SLICE 2 IN ARRAY my_array LOOP
+    first_elem := pair;
+    second_elem := pair;
+END LOOP;
+
+FOREACH item IN ARRAY my_array LOOP
+    counter := 'increment';
+    msg := 'processing item';
+END LOOP;
+EXCEPTION
+    WHEN some_condition OR some_other_condition 
+    THEN 
+        NULL;
+        EXECUTE 'SELECT x, y FROM compute($1, $2)'
+        INTO STRICT a, b
+        USING input1, input2;
+        RETURN x;
+END;
