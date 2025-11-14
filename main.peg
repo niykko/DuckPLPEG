@@ -28,7 +28,7 @@ function_name
     <- name
 
 create_function_arglist 
-    <- OPEN (create_function_arg (COMMA create_function_arg)*)? CLOSE
+    <- LBR (create_function_arg (COMMA create_function_arg)*)? RBR
 
 create_function_arg 
     <- argmode? argname? argtype ((EQUALS / DEFAULT) default_expr)?
@@ -46,7 +46,7 @@ default_expr
     <- expression
 
 column_list 
-    <- OPEN column (COMMA column)* CLOSE
+    <- LBR column (COMMA column)* RBR
 
 column 
     <- column_name column_type
@@ -216,6 +216,13 @@ plpgsql_statement
     / for_statement 
     / for_query_statement
     / foreach_statment
+    / cursor_statement
+
+cursor_statement
+    <- open_cursor
+    / fetch_cursor
+    / move_cursor 
+    / close_cursor
     
 
 sql_command
@@ -245,8 +252,8 @@ call_statement
     <- CALL (function_name / procedure_name) function_arglist SEP 
 
 function_arglist 
-    <- OPEN (variable REQUALS function_arg (COMMA variable REQUALS function_arg)*)? CLOSE
-    / OPEN (function_arg (COMMA function_arg)*)? CLOSE
+    <- LBR (variable REQUALS function_arg (COMMA variable REQUALS function_arg)*)? RBR
+    / LBR (function_arg (COMMA function_arg)*)? RBR
 
 function_arg
     <- expression
@@ -444,8 +451,8 @@ keysep
     <- !idChars Spacing
 
 SEP     <- ';' Spacing
-OPEN    <- '(' Spacing
-CLOSE   <- ')' Spacing 
+LBR    <- '(' Spacing
+RBR   <- ')' Spacing 
 COMMA   <- ',' Spacing
 DOLLAR  <- '$' Spacing
 DOUBLE_DOLLAR 
