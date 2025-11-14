@@ -200,6 +200,8 @@ plpgsql_statement
     / searched_case_statement
     / continue_statement
     / while_statement
+    / for_statement 
+    / for_query_statement
     
 
 sql_command
@@ -209,7 +211,7 @@ assignment_statement
     <- variable assign expression SEP 
 
 execute_statement
-    <- EXECUTE commandstring (INTO STRICT? execute_target)? (USING expressions)? SEP
+    <- EXECUTE commandstring (INTO STRICT? variables)? (USING expressions)? SEP
     
 commandstring
     <- expression             # TODO: Special expression that returns a string of type text
@@ -264,6 +266,17 @@ continue_statement
 
 while_statement
     <- shift_label? WHILE boolexpr LOOP plpgsql_statement+ END LOOP label? SEP
+
+for_statement
+    <- shift_label? FOR name IN REVERSE? expression DOUBLE_DOT expression 
+    LOOP plpgsql_statement+ END LOOP label? SEP
+
+for_query_statement
+    <- shift_label? FOR variables IN (sql_command / execute_statement)
+    LOOP plpgsql_statement+ END LOOP label? SEP
+    
+
+
 
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
@@ -324,7 +337,8 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY
         / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
         / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
-        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN / LOOP / CONTINUE
+        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN / LOOP / CONTINUE 
+        / WHILE / REVERSE / BY
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -393,6 +407,8 @@ WHEN        <- [Ww] [Hh] [Ee] [Nn] keysep
 LOOP        <- [Ll] [Oo] [Oo] [Pp] keysep
 CONTINUE    <- [Cc] [Oo] [Nn] [Tt] [Ii] [Nn] [Uu] [Ee] keysep
 WHILE       <- [Ww] [Hh] [Ii] [Ll] [Ee] keysep
+REVERSE     <- [Rr] [Ee] [Vv] [Ee] [Rr] [Ss] [Ee] keysep
+BY          <- [Bb] [Yy] keysep
 
 
 language 
@@ -419,6 +435,8 @@ EQUALS  <- '=' Spacing
 LSHIFT  <- '<<' Spacing
 RSHIFT  <- '>>' Spacing
 REQUALS <- '=>' Spacing
+DOUBLE_DOT
+        <- '..' Spacing
 
 
 # ------------------------------------------------------------------------------------
