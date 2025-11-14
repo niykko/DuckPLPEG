@@ -194,9 +194,11 @@ plpgsql_statement
     / null_statement
     / return_statement 
     / call_statement
+    / loop_statement
     / if_statement 
     / case_statement
     / searched_case_statement
+    
 
 sql_command
     <- blackbox             # TODO: let duckdb handle this
@@ -255,6 +257,9 @@ searched_case_statement
 boolexpr
     <- expression      # TODO: Special expression that returns a boolean
 
+loop_statement
+    <- shift_label? LOOP plpgsql_statement+ END LOOP label? SEP
+
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
 # ------------------------------------------------------------------------------------
@@ -311,7 +316,7 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY
         / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
         / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
-        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN 
+        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN / LOOP
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -377,6 +382,7 @@ ELSE        <- [Ee] [Ll] [Ss] [Ee] keysep
 ELSIF       <- [Ee] [Ll] [Ss] [Ii] [Ff] keysep
 CASE        <- [Cc] [Aa] [Ss] [Ee] keysep
 WHEN        <- [Ww] [Hh] [Ee] [Nn] keysep
+LOOP        <- [Ll] [Oo] [Oo] [Pp] keysep
 
 language 
     <- PLPGSQL

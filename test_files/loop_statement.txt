@@ -1,0 +1,41 @@
+LOOP
+    x := "hello";
+    y := "world";
+END LOOP;
+
+<<outer_loop>>
+LOOP
+    CASE
+        WHEN expr THEN
+            status := 'active';
+            CASE
+                WHEN expr THEN
+                    inner_msg := 'inner 1';
+                ELSE
+                    inner_msg := 'inner else';
+            END CASE;
+        ELSE
+            status := 'inactive';
+    END CASE;
+
+    counter := 'update';
+END LOOP outer_loop;
+
+<<my_loop>>
+LOOP
+    CASE mode
+        WHEN "fast" THEN
+            status := "f";
+        WHEN "slow" THEN
+            status := "s";
+        ELSE
+            status := "other";
+    END CASE;
+
+    CASE 
+    WHEN expr THEN
+        flag := "ok";
+    ELSE
+        flag := "fail";
+    END CASE;
+END LOOP my_loop;
