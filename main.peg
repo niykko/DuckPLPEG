@@ -283,10 +283,10 @@ positive_real
     <- [0-9]+ ('.' [0-9]*)? Spacing  
 
 expression 
-    <- NULL / any     # TODO: blackbox this (use identifier for testing purposes)    
+    <- NULL / any     # TODO: let duckdb handle this    
 
 type 
-    <- any   # TODO: blackbox this (use identifier for testing purposes) 
+    <- any   # TODO: let duckdb handle this
 
 any 
     <- identifier / number / String 
