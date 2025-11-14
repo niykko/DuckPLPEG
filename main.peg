@@ -5,7 +5,7 @@
 # ---- Top-level statement - This is the entry point ----
 
 test
-    <- program
+    <- plpgsql_statement+
 
 program
     <- Spacing postgresql_statement EndOfFile
@@ -195,6 +195,7 @@ plpgsql_statement
     / return_statement 
     / call_statement
     / if_statement 
+    / case_statement
 
 sql_command
     <- blackbox             # TODO: let duckdb handle this
@@ -203,7 +204,7 @@ assignment_statement
     <- variable assign expression SEP 
 
 execute_statement
-    <- EXECUTE commandstring (INTO STRICT? execute_target)? (USING expressions) SEP
+    <- EXECUTE commandstring (INTO STRICT? execute_target)? (USING expressions)? SEP
     
 commandstring
     <- expression             # TODO: Special expression that returns a string of type text
@@ -238,6 +239,12 @@ if_statement
     (ELSE plpgsql_statement+)?
     END IF SEP
 
+case_statement
+    <- CASE expression (WHEN expressions THEN plpgsql_statement+)+
+    (ELSE plpgsql_statement+)?
+    END CASE SEP
+     
+
 
 
 # ------------------------------------------------------------------------------------
@@ -268,16 +275,19 @@ positive_real
     <- [0-9]+ ('.' [0-9]*)? Spacing  
 
 expression 
-    <- any    # TODO: blackbox this (use identifier for testing purposes)    
+    <- NULL / any     # TODO: blackbox this (use identifier for testing purposes)    
 
 type 
     <- any   # TODO: blackbox this (use identifier for testing purposes) 
 
 any 
-    <- identifier / number 
+    <- identifier / number / String 
 
 number 
     <- [0-9]+ ('.' [0-9]+)? Spacing
+
+String 
+    <- '\'' ( '\'\' ' / (!'\'' .) )* '\'' Spacing
 
 
 # ------------------------------------------------------------------------------------
@@ -293,7 +303,7 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY
         / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
         / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
-        / SETOF / IF / THEN / ELSE / ELSIF
+        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN 
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -357,6 +367,8 @@ IF          <- [Ii] [Ff] keysep
 THEN        <- [Tt] [Hh] [Ee] [Nn] keysep
 ELSE        <- [Ee] [Ll] [Ss] [Ee] keysep
 ELSIF       <- [Ee] [Ll] [Ss] [Ii] [Ff] keysep
+CASE        <- [Cc] [Aa] [Ss] [Ee] keysep
+WHEN        <- [Ww] [Hh] [Ee] [Nn] keysep
 
 language 
     <- PLPGSQL
