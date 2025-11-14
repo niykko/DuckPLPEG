@@ -1,0 +1,30 @@
+<<my_loop>>
+LOOP
+    counter := 'start';
+
+    CASE
+        WHEN expr THEN
+            msg := 'skip this iteration';
+            CONTINUE my_loop;
+        ELSE
+            msg := 'process normally';
+    END CASE;
+
+    counter := 'end';
+END LOOP my_loop;
+
+
+<<my_loop>>
+LOOP
+    counter := 'start';
+
+    CASE
+        WHEN expr THEN
+            msg := 'skip this iteration';
+            CONTINUE my_loop WHEN boolexpr;
+        ELSE
+            msg := 'process normally';
+    END CASE;
+
+    counter := 'end';
+END LOOP my_loop;

@@ -198,6 +198,7 @@ plpgsql_statement
     / if_statement 
     / case_statement
     / searched_case_statement
+    / continue_statement
     
 
 sql_command
@@ -260,6 +261,9 @@ boolexpr
 loop_statement
     <- shift_label? LOOP plpgsql_statement+ END LOOP label? SEP
 
+continue_statement
+    <- CONTINUE label? (WHEN boolexpr)? SEP
+
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
 # ------------------------------------------------------------------------------------
@@ -316,7 +320,7 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY
         / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
         / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
-        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN / LOOP
+        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN / LOOP / CONTINUE
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -383,6 +387,8 @@ ELSIF       <- [Ee] [Ll] [Ss] [Ii] [Ff] keysep
 CASE        <- [Cc] [Aa] [Ss] [Ee] keysep
 WHEN        <- [Ww] [Hh] [Ee] [Nn] keysep
 LOOP        <- [Ll] [Oo] [Oo] [Pp] keysep
+CONTINUE    <- [Cc] [Oo] [Nn] [Tt] [Ii] [Nn] [Uu] [Ee] keysep
+
 
 language 
     <- PLPGSQL

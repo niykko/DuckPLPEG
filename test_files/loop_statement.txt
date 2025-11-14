@@ -38,4 +38,4 @@ LOOP
     ELSE
         flag := "fail";
     END CASE;
-END LOOP my_loop;
+END LOOP;
