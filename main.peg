@@ -199,6 +199,7 @@ plpgsql_statement
     / case_statement
     / searched_case_statement
     / continue_statement
+    / while_statement
     
 
 sql_command
@@ -263,6 +264,9 @@ loop_statement
 
 continue_statement
     <- CONTINUE label? (WHEN boolexpr)? SEP
+
+while_statement
+    <- shift_label? WHILE boolexpr LOOP plpgsql_statement+ END LOOP label? SEP
 
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
@@ -388,6 +392,7 @@ CASE        <- [Cc] [Aa] [Ss] [Ee] keysep
 WHEN        <- [Ww] [Hh] [Ee] [Nn] keysep
 LOOP        <- [Ll] [Oo] [Oo] [Pp] keysep
 CONTINUE    <- [Cc] [Oo] [Nn] [Tt] [Ii] [Nn] [Uu] [Ee] keysep
+WHILE       <- [Ww] [Hh] [Ii] [Ll] [Ee] keysep
 
 
 language 
