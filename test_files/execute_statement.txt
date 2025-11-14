@@ -1,0 +1,17 @@
+EXECUTE 'SELECT now()';
+
+EXECUTE 'SELECT 42' INTO result;
+
+EXECUTE 'SELECT id FROM users WHERE name = $1' INTO STRICT user_id;
+
+EXECUTE 'SELECT a, b FROM pair_table' INTO x, y;
+
+EXECUTE 'SELECT $1 * 2' USING multiplier;
+
+EXECUTE 'SELECT $1 + $2' USING a, b;
+
+EXECUTE 'SELECT x, y FROM compute($1, $2)'
+    INTO STRICT a, b
+    USING input1, input2;
+
+EXECUTE my_query_expression USING param1;
