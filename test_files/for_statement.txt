@@ -1,0 +1,42 @@
+FOR i IN 1..10 LOOP
+    counter := 'increment';
+    msg := 'inside numeric loop';
+END LOOP;
+
+FOR idx IN 1..5 LOOP
+    CASE
+        WHEN expr THEN
+            status := 'active';
+        ELSE
+            status := 'inactive';
+    END CASE;
+
+    counter := 'update';
+END LOOP;
+
+
+<<main_for>>
+FOR i IN 1..expr LOOP
+    counter := 'start';
+
+    CASE
+        WHEN expr THEN
+            msg := 'skip iteration';
+            CONTINUE main_for;
+        ELSE
+            msg := 'process normally';
+    END CASE;
+
+    counter := 'end';
+END LOOP main_for;
+
+FOR i IN 1..3 LOOP
+    FOR j IN 1..2 LOOP
+        CASE
+            WHEN expr THEN
+                inner_msg := 'inner loop';
+            ELSE
+                inner_msg := 'else branch';
+        END CASE;
+    END LOOP;
+END LOOP;
