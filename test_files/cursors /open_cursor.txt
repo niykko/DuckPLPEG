@@ -1,0 +1,8 @@
+OPEN curs1 FOR $SELECT * FROM foo WHERE key = mykey$;
+
+OPEN curs1 FOR EXECUTE format('SELECT * FROM %I WHERE col1 = $1',tabname) USING keyvalue;
+
+OPEN curs2;
+OPEN curs3(42);
+OPEN curs3(key := 42);
+OPEN curs3(key => 42);

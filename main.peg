@@ -218,13 +218,6 @@ plpgsql_statement
     / foreach_statment
     / cursor_statement
 
-cursor_statement
-    <- open_cursor
-    / fetch_cursor
-    / move_cursor 
-    / close_cursor
-    
-
 sql_command
     <- blackbox             # TODO: let duckdb handle this
 
@@ -300,7 +293,44 @@ foreach_statment
     <- shift_label? FOREACH variable (SLICE number)? IN ARRAY expression 
     LOOP plpgsql_statement+ END LOOP label? SEP
 
+cursor_statement
+    <- open_cursor
+    / fetch_cursor
+    / move_cursor 
+    / close_cursor
 
+open_cursor
+    <- open_for_query
+    / open_for_execute
+    / open_bound
+
+open_for_query
+    <- OPEN variable (NO? SCROLL)? FOR (sql_command / execute_statement) SEP
+
+open_for_execute
+    <- OPEN variable (NO? SCROLL)? FOR EXECUTE commandstring (USING expressions)? SEP
+
+open_bound
+    <- OPEN variable 
+    (LBR open_bound_assignment (COMMA open_bound_assignment)* RBR)? 
+    SEP
+
+open_bound_assignment
+    <- (name ( ASSIGN / REQUALS ))? expression
+
+fetch_cursor
+    <- FETCH direction? 
+    variable INTO variables SEP
+
+direction
+    <- (PRIOR / FIRST / LAST / FORWARD / BACKWARD / ABSOLUTE expression / RELATIVE expression) 
+    (FROM / IN)
+
+move_cursor 
+    <- MOVE direction? variable SEP
+
+close_cursor
+    <- CLOSE variable SEP
 
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
@@ -362,7 +392,9 @@ keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY
         / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
         / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
         / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN / LOOP / CONTINUE 
-        / WHILE / REVERSE / BY / FOREACH / ARRAY
+        / WHILE / REVERSE / BY / FOREACH / ARRAY / SLICE / EXCEPTION
+        / OPEN / CLOSE / FETCH / MOVE / PRIOR / FIRST / LAST / ABSOLUTE / RELATIVE
+        / FORWARD / BACKWARD
 
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
@@ -383,7 +415,7 @@ DECLARE     <- [Dd] [Ee] [Cc] [Ll] [Aa] [Rr] [Ee] keysep
 FUNCTION    <- [Ff] [Uu] [Nn] [Cc] [Tt] [Ii] [Oo] [Nn] keysep
 OR          <- [Oo] [Rr] keysep
 REPLACE     <- [Rr] [Ee] [Pp] [Ll] [Aa] [Cc] [Ee] keysep
-RETURN     <- [Rr] [Ee] [Tt] [Uu] [Rr] [Nn] keysep
+RETURN      <- [Rr] [Ee] [Tt] [Uu] [Rr] [Nn] keysep
 RETURNS     <- [Rr] [Ee] [Tt] [Uu] [Rr] [Nn] [Ss] keysep
 TABLE       <- [Tt] [Aa] [Bb] [Ll] [Ee] keysep
 VARIADIC    <- [Vv] [Aa] [Rr] [Ii] [Aa] [Dd] [Ii] [Cc] keysep
@@ -437,6 +469,19 @@ FOREACH     <- [Ff] [Oo] [Rr] [Ee] [Aa] [Cc] [Hh] keysep
 ARRAY       <- [Aa] [Rr] [Rr] [Aa] [Yy] keysep
 SLICE       <- [Ss] [Ll] [Ii] [Cc] [Ee] keysep
 EXCEPTION   <- [Ee] [Xx] [Cc] [Ee] [Pp] [Tt] [Ii] [Oo] [Nn] keysep
+OPEN        <- [Oo] [Pp] [Ee] [Nn] keysep
+CLOSE       <- [Cc] [Ll] [Oo] [Ss] [Ee] keysep 
+FETCH       <- [Ff] [Ee] [Tt] [Cc] [Hh] keysep
+MOVE        <- [Mm] [Oo] [Vv] [Ee] keysep
+PRIOR       <- [Pp] [Rr] [Ii] [Oo] [Rr] keysep
+FIRST       <- [Ff] [Ii] [Rr] [Ss] [Tt] keysep
+LAST        <- [Ll] [Aa] [Ss] [Tt] keysep
+ABSOLUTE    <- [Aa] [Bb] [Ss] [Oo] [Ll] [Uu] [Tt] [Ee] keysep
+RELATIVE    <- [Rr] [Ee] [Ll] [Aa] [Tt] [Ii] [Vv] [Ee] keysep
+FORWARD     <- [Ff] [Oo] [Rr] [Ww] [Aa] [Rr] [Dd] keysep
+BACKWARD    <- [Bb] [Aa] [Cc] [Kk] [Ww] [Aa] [Rr] [Dd] keysep
+NO          <- [Nn] [Oo] keysep
+SCROLL      <- [Ss] [Cc] [Rr] [Oo] [Ll] [Ll] keysep
 
 language 
     <- PLPGSQL
