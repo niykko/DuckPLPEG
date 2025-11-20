@@ -400,13 +400,16 @@ type
     <- any   # TODO: let duckdb handle this
 
 any 
-    <- function_call / identifier / number / String / blackbox
+    <- function_call / array / identifier / number / String / blackbox
 
 number 
     <- [0-9]+ ('.' [0-9]+)? Spacing
 
 function_call
     <- function_name function_arglist
+
+array  
+    <- identifier '[' Spacing (number ':'?)? ']' Spacing
 
 String 
     <- '\'' ( '\'\' ' / (!'\'' .) )* '\'' Spacing
