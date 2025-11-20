@@ -246,11 +246,27 @@ call_statement
     <- CALL (function_name / procedure_name) function_arglist SEP 
 
 function_arglist 
-    <- LBR (variable REQUALS function_arg (COMMA variable REQUALS function_arg)*)? RBR
-    / LBR (function_arg (COMMA function_arg)*)? RBR
+    <- LBR function_args? RBR
+
+function_args
+    <- positional_then_named_args
+    / positional_args 
+    / named_args 
+
+positional_args 
+    <- function_arg (COMMA function_arg)*
+
+named_args
+    <- named_arg (COMMA named_arg)*
+
+named_arg
+    <- variable (ASSIGN / REQUALS) function_arg 
+
+positional_then_named_args
+    <- function_arg (COMMA function_arg)* COMMA named_arg (COMMA named_arg)*
 
 function_arg
-    <- expression
+    <- !named_arg expression
 
 if_statement
     <- IF boolexpr THEN plpgsql_statement+ 
@@ -373,10 +389,13 @@ type
     <- any   # TODO: let duckdb handle this
 
 any 
-    <- identifier / number / String / blackbox
+    <- identifier / number / String / blackbox / function
 
 number 
     <- [0-9]+ ('.' [0-9]+)? Spacing
+
+function 
+    <- function_name function_arglist
 
 String 
     <- '\'' ( '\'\' ' / (!'\'' .) )* '\'' Spacing
