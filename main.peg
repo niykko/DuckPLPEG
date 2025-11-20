@@ -5,7 +5,7 @@
 # ---- Top-level statement - This is the entry point ----
 
 test
-    <- plpgsql_statement+
+    <- program+
 
 program
     <- Spacing postgresql_statement EndOfFile
@@ -217,6 +217,7 @@ plpgsql_statement
     / for_query_statement
     / foreach_statment
     / cursor_statement
+    / exit_statement
 
 sql_command
     <- blackbox             # TODO: let duckdb handle this
@@ -252,8 +253,8 @@ function_arg
     <- expression
 
 if_statement
-    <- IF expression THEN plpgsql_statement+ 
-    (ELSIF expression THEN plpgsql_statement+)*
+    <- IF boolexpr THEN plpgsql_statement+ 
+    (ELSIF boolexpr THEN plpgsql_statement+)*
     (ELSE plpgsql_statement+)?
     END IF SEP
 
@@ -270,7 +271,7 @@ searched_case_statement
     END CASE SEP
 
 boolexpr
-    <- expression      # TODO: Special expression that returns a boolean
+    <- NOT? expression ((AND / OR) boolexpr)*      # TODO: Special expression that returns a boolean
 
 loop_statement
     <- shift_label? LOOP plpgsql_statement+ END LOOP label? SEP
@@ -323,7 +324,7 @@ fetch_cursor
     variable INTO variables SEP
 
 direction
-    <- (PRIOR / FIRST / LAST / FORWARD / BACKWARD / ABSOLUTE expression / RELATIVE expression) 
+    <- (PRIOR / FIRST / LAST / FORWARD expression / BACKWARD expression / ABSOLUTE expression / RELATIVE expression) 
     (FROM / IN)
 
 move_cursor 
@@ -331,6 +332,9 @@ move_cursor
 
 close_cursor
     <- CLOSE variable SEP
+
+exit_statement
+    <- EXIT label? (WHEN boolexpr)? SEP
 
 # ------------------------------------------------------------------------------------
 # Identifiers, Types and Expressions
@@ -482,6 +486,9 @@ FORWARD     <- [Ff] [Oo] [Rr] [Ww] [Aa] [Rr] [Dd] keysep
 BACKWARD    <- [Bb] [Aa] [Cc] [Kk] [Ww] [Aa] [Rr] [Dd] keysep
 NO          <- [Nn] [Oo] keysep
 SCROLL      <- [Ss] [Cc] [Rr] [Oo] [Ll] [Ll] keysep
+AND         <- [Aa] [Nn] [Dd] keysep
+EXIT        <- [Ee] [Xx] [Ii] [Tt] keysep
+EXISTS      <- [Ee] [Xx] [Ii] [Ss] [Tt] [Ss] keysep
 
 language 
     <- PLPGSQL
