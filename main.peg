@@ -11,7 +11,7 @@ program
     <- Spacing postgresql_statement EndOfFile
 
 postgresql_statement
-    <- (create_function / create_procedure) SEP
+    <- (create_function / create_procedure / drop_function) SEP
 
 
 # ------------------------------------------------------------------------------------
@@ -32,6 +32,7 @@ create_function_arglist
 
 create_function_arg 
     <- argmode? argname? argtype ((EQUALS / DEFAULT) default_expr)?
+    / argmode? argtype ((EQUALS / DEFAULT) default_expr)?
 
 argmode 
     <- IN / OUT/ INOUT / VARIADIC
@@ -147,6 +148,16 @@ procedure_option
     / security_option
     / set_option
     / AS definition
+
+
+# ------------------------------------------------------------------------------------
+# DROP FUNCTION Statement
+# ------------------------------------------------------------------------------------
+
+drop_function
+    <- DROP FUNCTION (IF EXISTS)? function_name create_function_arglist?
+
+
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -507,6 +518,7 @@ NO          <- [Nn] [Oo] keysep
 SCROLL      <- [Ss] [Cc] [Rr] [Oo] [Ll] [Ll] keysep
 AND         <- [Aa] [Nn] [Dd] keysep
 EXIT        <- [Ee] [Xx] [Ii] [Tt] keysep
+DROP        <- [Dd] [Rr] [Oo] [Pp] keysep 
 EXISTS      <- [Ee] [Xx] [Ii] [Ss] [Tt] [Ss] keysep
 
 language 
