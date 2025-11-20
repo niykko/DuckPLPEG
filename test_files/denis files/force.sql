@@ -1,7 +1,7 @@
 CREATE FUNCTION force(body bodies, theta float) RETURNS point AS
 $$
   DECLARE
-    force      point := $point(0,0)$;
+    force      point := point(0,0);
     G CONSTANT float := $6.67e-11$;
     Q          $barneshut[]$;
     node       barneshut;

@@ -389,7 +389,7 @@ type
     <- any   # TODO: let duckdb handle this
 
 any 
-    <- identifier / number / String / blackbox / function
+    <- function / identifier / number / String / blackbox
 
 number 
     <- [0-9]+ ('.' [0-9]+)? Spacing
