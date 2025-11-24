@@ -14,6 +14,11 @@ $$
       $multi := multi OR li.l_suppkey <> suppkey$;
       IF $li.l_receiptdate > li.l_commitdate$ THEN
           IF $li.l_suppkey <> suppkey$ THEN
+            <<label>> DECLARE -- i added this part to test inner labeled blocks
+            some_other_supplier boolean := false; -- 
+            BEGIN -- 
+                NULL; --
+            END label; --
             RETURN false;
           ELSE
             $blame := true$;
