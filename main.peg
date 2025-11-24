@@ -231,7 +231,7 @@ plpgsql_statement
     / exit_statement
 
 sql_command
-    <- blackbox             # TODO: let duckdb handle this
+    <- blackbox SEP?            # TODO: let duckdb handle this
 
 assignment_statement
     <- variable assign expression SEP 
