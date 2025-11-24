@@ -11,7 +11,7 @@ $$
             FROM   lineitem AS l
             WHERE  l.l_orderkey = orderkey)$;
     FOREACH li IN ARRAY lis LOOP
-      $multi := multi OR li.l_suppkey <> suppkey$;
+      multi := $multi OR li.l_suppkey <> suppkey$;
       IF $li.l_receiptdate > li.l_commitdate$ THEN
           IF $li.l_suppkey <> suppkey$ THEN
             <<label>> DECLARE -- i added this part to test inner labeled blocks
