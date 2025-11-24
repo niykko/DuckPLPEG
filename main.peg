@@ -229,6 +229,7 @@ plpgsql_statement
     / foreach_statement
     / cursor_statement
     / exit_statement
+    / plpgsql_inner_block
 
 sql_command
     <- blackbox SEP?            # TODO: let duckdb handle this

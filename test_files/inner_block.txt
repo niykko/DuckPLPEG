@@ -1,0 +1,12 @@
+BEGIN
+    eins := 1;
+    <<zwo>> DECLARE
+        some_int int;
+    BEGIN 
+        zwei := 2;
+        <<troe>> BEGIN 
+            drei := 3;
+        END troe;
+    END zwo;
+    eins := 1;
+END
