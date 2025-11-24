@@ -226,7 +226,7 @@ plpgsql_statement
     / while_statement
     / for_statement 
     / for_query_statement
-    / foreach_statment
+    / foreach_statement
     / cursor_statement
     / exit_statement
 
@@ -317,7 +317,7 @@ for_query_statement
     <- shift_label? FOR variables IN (sql_command / execute_statement)
     LOOP plpgsql_statement+ END LOOP label? SEP
     
-foreach_statment
+foreach_statement
     <- shift_label? FOREACH variable (SLICE number)? IN ARRAY expression 
     LOOP plpgsql_statement+ END LOOP label? SEP
 
