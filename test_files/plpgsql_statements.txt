@@ -1,4 +1,4 @@
-a = 5;
-bn := 3196;
-EXECUTE expr INTO STRICT a,b , c USING 1,2,3; 
-NULL;
+a = |5|;
+bn := |3196|;
+EXECUTE |expr| INTO STRICT a,b , c USING |1|,|2|,|3|; 
+|NULL|;

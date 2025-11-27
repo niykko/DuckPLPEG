@@ -1,32 +1,32 @@
-WHILE expr LOOP
-    counter := 'increment';
-    msg := 'inside loop';
+WHILE |expr| LOOP
+    counter := |'increment'|;
+    msg := |'inside loop'|;
 END LOOP;
 
 
 <<main_loop>>
-WHILE expr LOOP
-    counter := 'start';
+WHILE |expr| LOOP
+    counter := |'start'|;
 
     CASE
-        WHEN expr THEN
-            msg := 'skip this iteration';
+        WHEN |expr| THEN
+            msg := |'skip this iteration'|;
             CONTINUE main_loop;
         ELSE
-            msg := 'process normally';
+            msg := |'process normally'|;
     END CASE;
 
-    counter := 'end';
+    counter := |'end'|;
 END LOOP main_loop;
 
 
-WHILE expr LOOP
+WHILE |expr| LOOP
     CASE
-        WHEN expr THEN
-            status := 'active';
+        WHEN |expr| THEN
+            status := |'active'|;
         ELSE
-            status := 'inactive';
+            status := |'inactive'|;
     END CASE;
 
-    counter := 'update';
+    counter := |'update'|;
 END LOOP;

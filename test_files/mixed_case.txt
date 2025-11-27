@@ -1,33 +1,33 @@
-CASE x
-    WHEN expr THEN
-        msg := 'first branch of simple case';
+CASE |x|
+    WHEN |expr| THEN
+        msg := |'first branch of simple case'|;
 
         CASE
-            WHEN expr THEN
-                inner_msg := 'searched inner branch 1';
-            WHEN expr THEN
-                inner_msg := 'searched inner branch 2';
+            WHEN |expr| THEN
+                inner_msg := |'searched inner branch 1'|;
+            WHEN |expr| THEN
+                inner_msg := |'searched inner branch 2'|;
             ELSE
-                inner_msg := 'searched inner else';
+                inner_msg := |'searched inner else'|;
         END CASE;
 
-    WHEN expr, expr THEN
-        msg := 'second branch of simple case';
+    WHEN |expr|, |expr| THEN
+        msg := |'second branch of simple case'|;
 
-        CASE y
-            WHEN expr THEN
-                deep_msg := 'normal nested case 1';
+        CASE |y|
+            WHEN |expr| THEN
+                deep_msg := |'normal nested case 1'|;
             ELSE
-                deep_msg := 'normal nested case else';
+                deep_msg := |'normal nested case else'|;
         END CASE;
 
     ELSE
-        msg := 'outer else branch';
+        msg := |'outer else branch'|;
 
         CASE
-            WHEN expr THEN
-                final_msg := 'searched final branch';
+            WHEN |expr| THEN
+                final_msg := |'searched final branch'|;
             ELSE
-                final_msg := 'searched final else';
+                final_msg := |'searched final else'|;
         END CASE;
 END CASE;

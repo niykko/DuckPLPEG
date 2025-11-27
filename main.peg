@@ -158,8 +158,6 @@ drop_function
     <- DROP FUNCTION (IF EXISTS)? function_name create_function_arglist?
 
 
-
-
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # PL/pgSQL
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -204,8 +202,9 @@ exception_conditions
     <- exception_condition (OR exception_condition)*
 
 exception_condition
-    <- any                              # TODO: implement our exception conditions or use postgresql's?
+    <- blackbox                              # TODO: implement our exception conditions or use postgresql's?
     # found here: https://www.postgresql.org/docs/18/errcodes-appendix.html (Appendix A)
+
 
 # ------------------------------------------------------------------------------------
 # PL/pgSQL Statements
@@ -213,7 +212,6 @@ exception_condition
 
 plpgsql_statement
     <- sql_command
-    / assignment_statement
     / execute_statement
     / null_statement
     / return_statement 
@@ -230,6 +228,7 @@ plpgsql_statement
     / cursor_statement
     / exit_statement
     / plpgsql_inner_block
+    / assignment_statement
 
 sql_command
     <- blackbox SEP?            # TODO: let duckdb handle this
@@ -299,7 +298,7 @@ searched_case_statement
     END CASE SEP
 
 boolexpr
-    <- NOT? expression ((AND / OR) boolexpr)*      # TODO: Special expression that returns a boolean
+    <- expression      # TODO: Special expression that returns a boolean
 
 loop_statement
     <- shift_label? LOOP plpgsql_statement+ END LOOP label? SEP
@@ -383,7 +382,7 @@ identifier
 quoted_id
     <- '"' ( '""' / (!'"' .) )* '"'
 
-id  <- (!keyword) idStart idChars* 
+id  <- idStart idChars* 
 
 idStart
     <- [a-zA-Z_]
@@ -395,13 +394,10 @@ positive_real
     <- [0-9]+ ('.' [0-9]*)? Spacing  
 
 expression 
-    <- NULL / any     # TODO: let duckdb handle this    
+    <- function_call / blackbox     # TODO: let duckdb handle this    
 
 type 
-    <- any   # TODO: let duckdb handle this
-
-any 
-    <- function_call / array / identifier / number / String / blackbox
+    <- blackbox   # TODO: let duckdb handle this
 
 number 
     <- [0-9]+ ('.' [0-9]+)? Spacing
@@ -409,31 +405,9 @@ number
 function_call
     <- function_name function_arglist
 
-array  
-    <- identifier '[' Spacing (number ':'?)? ']' Spacing
-
-String 
-    <- '\'' ( '\'\' ' / (!'\'' .) )* '\'' Spacing
-
-
 # ------------------------------------------------------------------------------------
 # Keywords
 # ------------------------------------------------------------------------------------
-
-keyword <- CREATE / PROCEDURE / LANGUAGE / AS / SECURITY 
-        / INVOKER / DEFINER / SET / CALL / IN / OUT 
-        / INOUT / BEGIN / END / DECLARE / FUNCTION / OR / REPLACE
-        / RETURN / RETURNS / TABLE / VARIADIC / TRANSFORM / FOR / TYPE
-        / WINDOW / IMMUTABLE / STABLE / VOLATILE / NOT
-        / LEAKPROOF / CALLED / ON / NULL / INPUT / STRICT 
-        / EXTERNAL / PARALLEL / COST / ROWS / SUPPORT
-        / TO / FROM / CURRENT / UNSAFE / RESTRICTED / SAFE / DEFAULT 
-        / CONSTANT / PLPGSQL / COLLATE / EXECUTE / INTO / USING / NEXT / QUERY
-        / SETOF / IF / THEN / ELSE / ELSIF / CASE / WHEN / LOOP / CONTINUE 
-        / WHILE / REVERSE / BY / FOREACH / ARRAY / SLICE / EXCEPTION
-        / OPEN / CLOSE / FETCH / MOVE / PRIOR / FIRST / LAST / ABSOLUTE / RELATIVE
-        / FORWARD / BACKWARD
-
 
 CREATE      <- [Cc] [Rr] [Ee] [Aa] [Tt] [Ee] keysep
 PROCEDURE   <- [Pp] [Rr] [Oo] [Cc] [Ee] [Dd] [Uu] [Rr] [Ee] keysep
@@ -502,7 +476,6 @@ LOOP        <- [Ll] [Oo] [Oo] [Pp] keysep
 CONTINUE    <- [Cc] [Oo] [Nn] [Tt] [Ii] [Nn] [Uu] [Ee] keysep
 WHILE       <- [Ww] [Hh] [Ii] [Ll] [Ee] keysep
 REVERSE     <- [Rr] [Ee] [Vv] [Ee] [Rr] [Ss] [Ee] keysep
-BY          <- [Bb] [Yy] keysep
 FOREACH     <- [Ff] [Oo] [Rr] [Ee] [Aa] [Cc] [Hh] keysep
 ARRAY       <- [Aa] [Rr] [Rr] [Aa] [Yy] keysep
 SLICE       <- [Ss] [Ll] [Ii] [Cc] [Ee] keysep
@@ -520,7 +493,6 @@ FORWARD     <- [Ff] [Oo] [Rr] [Ww] [Aa] [Rr] [Dd] keysep
 BACKWARD    <- [Bb] [Aa] [Cc] [Kk] [Ww] [Aa] [Rr] [Dd] keysep
 NO          <- [Nn] [Oo] keysep
 SCROLL      <- [Ss] [Cc] [Rr] [Oo] [Ll] [Ll] keysep
-AND         <- [Aa] [Nn] [Dd] keysep
 EXIT        <- [Ee] [Xx] [Ii] [Tt] keysep
 DROP        <- [Dd] [Rr] [Oo] [Pp] keysep 
 EXISTS      <- [Ee] [Xx] [Ii] [Ss] [Tt] [Ss] keysep
@@ -551,6 +523,8 @@ RSHIFT  <- '>>' Spacing
 REQUALS <- '=>' Spacing
 DOUBLE_DOT
         <- '..' Spacing
+BLACKBOX_SYMBOL
+        <- '|' Spacing
 
 
 # ------------------------------------------------------------------------------------
@@ -577,7 +551,7 @@ EndOfFile
     <- !.
 
 blackbox 
-    <- DOLLAR (!DOLLAR .)* DOLLAR Spacing
+    <- BLACKBOX_SYMBOL (!BLACKBOX_SYMBOL .)* BLACKBOX_SYMBOL Spacing
 
 
 

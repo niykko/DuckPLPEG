@@ -1,60 +1,60 @@
-CASE x
-    WHEN 1, 2 THEN
-        msg := 'one or two';
+CASE |x|
+    WHEN |1|, |2| THEN
+        msg := |'one or two'|;
     ELSE
-        msg := 'other value than one or two';
+        msg := |'other value than one or two'|;
 END CASE;
 
 
-CASE value
-    WHEN 10 THEN
-        result := 'ten';
-    WHEN 20 THEN
-        result := 'twenty';
-    WHEN 30, 40, 50 THEN
-        result := 'many';
+CASE |value|
+    WHEN |10| THEN
+        result := |'ten'|;
+    WHEN |20| THEN
+        result := |'twenty'|;
+    WHEN |30|, |40|, |50| THEN
+        result := |'many'|;
 END CASE;
 
 
-CASE outer_val
-    WHEN 1 THEN
-        CASE inner_val
-            WHEN 'a' THEN
-                msg := 'one-a';
+CASE |outer_val|
+    WHEN |1| THEN
+        CASE |inner_val|
+            WHEN |'a'| THEN
+                msg := |'one-a'|;
             ELSE
-                msg := 'one-other';
+                msg := |'one-other'|;
         END CASE;
     ELSE
-        msg := 'outer-other';
+        msg := |'outer-other'|;
 END CASE;
 
 
-CASE flag
-    WHEN true THEN
-        msg := 'flag set';
-    WHEN false THEN
-        msg := 'flag cleared';
+CASE |flag|
+    WHEN |true| THEN
+        msg := |'flag set'|;
+    WHEN |false| THEN
+        msg := |'flag cleared'|;
 END CASE;
 
 
-CASE mode
-    WHEN 'exec' THEN
-        EXECUTE 5;
-    WHEN 'assign' THEN
-        value := default_val;
+CASE |mode|
+    WHEN |'exec'| THEN
+        EXECUTE |5|;
+    WHEN |'assign'| THEN
+        value := |default_val|;
     ELSE
-        result := NULL;
+        result := |NULL|;
 END CASE;
 
 
-CASE customer_type
-    WHEN 'vip' THEN
-        discount := 20;
-        msg := 'special customer';
-    WHEN 'regular', 'member' THEN
-        discount := 5;
-        msg := 'normal customer';
+CASE |customer_type|
+    WHEN |'vip'| THEN
+        discount := |20|;
+        msg := |'special customer'|;
+    WHEN |'regular'|, |'member'| THEN
+        discount := |5|;
+        msg := |'normal customer'|;
     ELSE
-        discount := 0;
-        msg := 'unknown customer';
+        discount := |0|;
+        msg := |'unknown customer'|;
 END CASE;

@@ -1,0 +1,5 @@
+CALL somefunc(a => |5|, b => |text|);
+CALL somefunc(|1|,|2|,|3|,  
+
+|4|);
+CALL somefunc(|1|,|2|, a => |3|, b => |4|);

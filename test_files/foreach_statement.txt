@@ -1,22 +1,22 @@
 <<process_array>>
-FOREACH element IN ARRAY my_array LOOP
+FOREACH element IN ARRAY |my_array| LOOP
     CASE
-        WHEN expr THEN
-            status := 'active';
+        WHEN |expr| THEN
+            status := |'active'|;
         ELSE
-            status := 'inactive';
+            status := |'inactive'|;
     END CASE;
 
-    counter := 'update';
+    counter := |'update'|;
 END LOOP process_array;
 
 
-FOREACH pair SLICE 2 IN ARRAY my_array LOOP
-    first_elem := pair;
-    second_elem := pair;
+FOREACH pair SLICE 2 IN ARRAY |my_array| LOOP
+    first_elem := |pair|;
+    second_elem := |pair|;
 END LOOP;
 
-FOREACH item IN ARRAY my_array LOOP
-    counter := 'increment';
-    msg := 'processing item';
+FOREACH item IN ARRAY |my_array| LOOP
+    counter := |'increment'|;
+    msg := |'processing item'|;
 END LOOP;

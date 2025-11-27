@@ -1,44 +1,44 @@
-FOR rec IN $SELECT expr AS col FROM my_table$ LOOP
-    msg := 'processing row';
+FOR rec IN |SELECT expr AS col FROM my_table| LOOP
+    msg := |'processing row'|;
 END LOOP;
 
-FOR row_rec IN $SELECT expr AS col FROM my_table$ LOOP
+FOR row_rec IN |SELECT expr AS col FROM my_table| LOOP
     CASE
-        WHEN expr THEN
-            status := 'active';
+        WHEN |expr| THEN
+            status := |'active'|;
         ELSE
-            status := 'inactive';
+            status := |'inactive'|;
     END CASE;
 
-    counter := 'update';
+    counter := |'update'|;
 END LOOP;
 
 <<process_rows>>
-FOR rec IN $SELECT expr AS col FROM my_table$ LOOP
+FOR rec IN |SELECT expr AS col FROM my_table| LOOP
     CASE
-        WHEN expr THEN
-            msg := 'skip this row';
+        WHEN |expr| THEN
+            msg := |'skip this row'|;
             CONTINUE process_rows;
         ELSE
-            msg := 'process normally';
+            msg := |'process normally'|;
     END CASE;
 
-    counter := 'next';
+    counter := |'next'|;
 END LOOP process_rows;
 
 <<process_rows>>
 FOR rec IN 
-    EXECUTE 'SELECT x, y FROM compute($1, $2)'
+    EXECUTE |'SELECT x, y FROM compute($1, $2)'|
     INTO STRICT a, b
-    USING input1, input2; 
+    USING |input1|, |input2|;
 LOOP
     CASE
-        WHEN expr THEN
-            msg := 'skip this row';
+        WHEN |expr| THEN
+            msg := |'skip this row'|;
             CONTINUE process_rows;
         ELSE
-            msg := 'process normally';
+            msg := |'process normally'|;
     END CASE;
 
-    counter := 'next';
+    counter := |'next'|;
 END LOOP process_rows;
