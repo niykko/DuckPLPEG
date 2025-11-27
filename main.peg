@@ -554,7 +554,7 @@ EndOfFile
 blackbox 
     <- BLACKBOX_SYMBOL (!BLACKBOX_SYMBOL .)* BLACKBOX_SYMBOL Spacing
 
-
+%whitespace  <-  [ \t\r\n]*
 
 
 
