@@ -8,7 +8,7 @@ test
     <- program+
 
 program
-    <- Spacing postgresql_statement+ EndOfFile
+    <- postgresql_statement+ EndOfFile
 
 postgresql_statement
     <- (create_function / create_procedure / drop_function) SEP
