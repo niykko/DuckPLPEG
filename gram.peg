@@ -1,0 +1,6 @@
+# Grammar for Calculator...
+Additive    <- Multiplicative '+' Additive / Multiplicative
+Multiplicative   <- Primary '*' Multiplicative / Primary
+Primary     <- '(' Additive ')' / Number
+Number      <- < [0-9]+ >
+%whitespace <- [ \t]*
