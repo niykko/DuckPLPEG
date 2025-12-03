@@ -377,7 +377,7 @@ name
     <- identifier
 
 identifier 
-    <- (quoted_id / id) Spacing
+    <- (quoted_id / id) _
 
 quoted_id
     <- '"' ( '""' / (!'"' .) )* '"'
@@ -391,7 +391,7 @@ idChars
     <- [a-zA-Z0-9_]
 
 positive_real 
-    <- [0-9]+ ('.' [0-9]*)? Spacing  
+    <- [0-9]+ ('.' [0-9]*)? _  
 
 expression 
     <- function_call / blackbox     # TODO: let duckdb handle this    
@@ -400,7 +400,7 @@ type
     <- blackbox   # TODO: let duckdb handle this
 
 number 
-    <- [0-9]+ ('.' [0-9]+)? Spacing
+    <- [0-9]+ ('.' [0-9]+)? _
 
 function_call
     <- function_name function_arglist
@@ -409,93 +409,94 @@ function_call
 # Keywords
 # ------------------------------------------------------------------------------------
 
-CREATE      <- < 'CREATE'i keysep >
-PROCEDURE   <- < 'PROCEDURE'i keysep >
-LANGUAGE    <- < 'LANGUAGE'i keysep >
-AS          <- < 'AS'i keysep >
-SECURITY    <- < 'SECURITY'i keysep >
-INVOKER     <- < 'INVOKER'i keysep >
-DEFINER     <- < 'DEFINER'i keysep >
-SET         <- < 'SET'i keysep > 
-CALL        <- < 'CALL'i keysep >
-IN          <- < 'IN'i keysep >
-OUT         <- < 'OUT'i keysep >
-INOUT       <- < 'INOUT'i keysep >
-BEGIN       <- < 'BEGIN'i keysep >
-END         <- < 'END'i keysep >
-DECLARE     <- < 'DECLARE'i keysep >
-FUNCTION    <- < 'FUNCTION'i keysep >
-OR          <- < 'OR'i keysep >
-REPLACE     <- < 'REPLACE'i keysep >
-RETURN      <- < 'RETURN'i keysep >
-RETURNS     <- < 'RETURNS'i keysep >
-TABLE       <- < 'TABLE'i keysep >
-VARIADIC    <- < 'VARIADIC'i keysep >
-TRANSFORM   <- < 'TRANSFORM'i keysep >
-FOR         <- < 'FOR'i keysep >
-TYPE        <- < 'TYPE'i keysep >
-WINDOW      <- < 'WINDOW'i keysep >
-IMMUTABLE   <- < 'IMMUTABLE'i keysep >
-STABLE      <- < 'STABLE'i keysep >
-VOLATILE    <- < 'VOLATILE'i keysep >
-NOT         <- < 'NOT'i keysep >
-LEAKPROOF   <- < 'LEAKPROOF'i keysep >
-CALLED      <- < 'CALLED'i keysep >
-ON          <- < 'ON'i keysep >
-NULL        <- < 'NULL'i keysep >
-INPUT       <- < 'INPUT'i keysep >
-STRICT      <- < 'STRICT'i keysep >
-EXTERNAL    <- < 'EXTERNAL'i keysep >
-PARALLEL    <- < 'PARALLEL'i keysep >
-COST        <- < 'COST'i keysep >
-ROWS        <- < 'ROWS'i keysep >
-SUPPORT     <- < 'SUPPORT'i keysep >
-TO          <- < 'TO'i keysep >
-FROM        <- < 'FROM'i keysep >
-CURRENT     <- < 'CURRENT'i keysep >
-UNSAFE      <- < 'UNSAFE'i keysep >
-RESTRICTED  <- < 'RESTRICTED'i keysep >
-SAFE        <- < 'SAFE'i keysep >
-DEFAULT     <- < 'DEFAULT'i keysep >
-CONSTANT    <- < 'CONSTANT'i keysep >
-PLPGSQL     <- < 'PLPGSQL'i keysep >
-COLLATE     <- < 'COLLATE'i keysep >
-EXECUTE     <- < 'EXECUTE'i keysep >
-INTO        <- < 'INTO'i keysep >
-USING       <- < 'USING'i keysep >
-NEXT        <- < 'NEXT'i keysep >
-QUERY       <- < 'QUERY'i keysep >
-SETOF       <- < 'SETOF'i keysep >
-IF          <- < 'IF'i keysep >
-THEN        <- < 'THEN'i keysep >
-ELSE        <- < 'ELSE'i keysep >
-ELSIF       <- < 'ELSIF'i keysep >
-CASE        <- < 'CASE'i keysep >
-WHEN        <- < 'WHEN'i keysep >
-LOOP        <- < 'LOOP'i keysep >
-CONTINUE    <- < 'CONTINUE'i keysep >
-WHILE       <- < 'WHILE'i keysep >
-REVERSE     <- < 'REVERSE'i keysep >
-FOREACH     <- < 'FOREACH'i keysep >
-ARRAY       <- < 'ARRAY'i keysep >
-SLICE       <- < 'SLICE'i keysep >
-EXCEPTION   <- < 'EXCEPTION'i keysep >
-OPEN        <- < 'OPEN'i keysep >
-CLOSE       <- < 'CLOSE'i keysep >
-FETCH       <- < 'FETCH'i keysep >
-MOVE        <- < 'MOVE'i keysep >
-PRIOR       <- < 'PRIOR'i keysep >
-FIRST       <- < 'FIRST'i keysep >
-LAST        <- < 'LAST'i keysep >
-ABSOLUTE    <- < 'ABSOLUTE'i keysep >
-RELATIVE    <- < 'RELATIVE'i keysep >
-FORWARD     <- < 'FORWARD'i keysep >
-BACKWARD    <- < 'BACKWARD'i keysep >
-NO          <- < 'NO'i keysep >
-SCROLL      <- < 'SCROLL'i keysep >
-EXIT        <- < 'EXIT'i keysep >
-DROP        <- < 'DROP'i keysep >
-EXISTS      <- < 'EXISTS'i keysep >
+CREATE      <- < 'CREATE'i > __
+PROCEDURE   <- < 'PROCEDURE'i > __
+LANGUAGE    <- < 'LANGUAGE'i > __
+AS          <- < 'AS'i > __
+SECURITY    <- < 'SECURITY'i > __
+INVOKER     <- < 'INVOKER'i > __
+DEFINER     <- < 'DEFINER'i > __
+SET         <- < 'SET'i > __
+CALL        <- < 'CALL'i > __
+IN          <- < 'IN'i > __
+OUT         <- < 'OUT'i > __
+INOUT       <- < 'INOUT'i > __
+BEGIN       <- < 'BEGIN'i > __
+END         <- < 'END'i > __
+DECLARE     <- < 'DECLARE'i > __
+FUNCTION    <- < 'FUNCTION'i > __
+OR          <- < 'OR'i > __
+REPLACE     <- < 'REPLACE'i > __
+RETURN      <- < 'RETURN'i > __
+RETURNS     <- < 'RETURNS'i > __
+TABLE       <- < 'TABLE'i > __
+VARIADIC    <- < 'VARIADIC'i > __
+TRANSFORM   <- < 'TRANSFORM'i > __
+FOR         <- < 'FOR'i > __
+TYPE        <- < 'TYPE'i > __
+WINDOW      <- < 'WINDOW'i > __
+IMMUTABLE   <- < 'IMMUTABLE'i > __
+STABLE      <- < 'STABLE'i > __
+VOLATILE    <- < 'VOLATILE'i > __
+NOT         <- < 'NOT'i > __
+LEAKPROOF   <- < 'LEAKPROOF'i > __
+CALLED      <- < 'CALLED'i > __
+ON          <- < 'ON'i > __
+NULL        <- < 'NULL'i > __
+INPUT       <- < 'INPUT'i > __
+STRICT      <- < 'STRICT'i > __
+EXTERNAL    <- < 'EXTERNAL'i > __
+PARALLEL    <- < 'PARALLEL'i > __
+COST        <- < 'COST'i > __
+ROWS        <- < 'ROWS'i > __
+SUPPORT     <- < 'SUPPORT'i > __
+TO          <- < 'TO'i > __
+FROM        <- < 'FROM'i > __
+CURRENT     <- < 'CURRENT'i > __
+UNSAFE      <- < 'UNSAFE'i > __
+RESTRICTED  <- < 'RESTRICTED'i > __
+SAFE        <- < 'SAFE'i > __
+DEFAULT     <- < 'DEFAULT'i > __
+CONSTANT    <- < 'CONSTANT'i > __
+PLPGSQL     <- < 'PLPGSQL'i > __
+COLLATE     <- < 'COLLATE'i > __
+EXECUTE     <- < 'EXECUTE'i > __
+INTO        <- < 'INTO'i > __
+USING       <- < 'USING'i > __
+NEXT        <- < 'NEXT'i > __
+QUERY       <- < 'QUERY'i > __
+SETOF       <- < 'SETOF'i > __
+IF          <- < 'IF'i > __
+THEN        <- < 'THEN'i > __
+ELSE        <- < 'ELSE'i > __
+ELSIF       <- < 'ELSIF'i > __
+CASE        <- < 'CASE'i > __
+WHEN        <- < 'WHEN'i > __
+LOOP        <- < 'LOOP'i > __
+CONTINUE    <- < 'CONTINUE'i > __
+WHILE       <- < 'WHILE'i > __
+REVERSE     <- < 'REVERSE'i > __
+FOREACH     <- < 'FOREACH'i > __
+ARRAY       <- < 'ARRAY'i > __
+SLICE       <- < 'SLICE'i > __
+EXCEPTION   <- < 'EXCEPTION'i > __
+OPEN        <- < 'OPEN'i > __
+CLOSE       <- < 'CLOSE'i > __
+FETCH       <- < 'FETCH'i > __
+MOVE        <- < 'MOVE'i > __
+PRIOR       <- < 'PRIOR'i > __
+FIRST       <- < 'FIRST'i > __
+LAST        <- < 'LAST'i > __
+ABSOLUTE    <- < 'ABSOLUTE'i > __
+RELATIVE    <- < 'RELATIVE'i > __
+FORWARD     <- < 'FORWARD'i > __
+BACKWARD    <- < 'BACKWARD'i > __
+NO          <- < 'NO'i > __
+SCROLL      <- < 'SCROLL'i > __
+EXIT        <- < 'EXIT'i > __
+DROP        <- < 'DROP'i > __
+EXISTS      <- < 'EXISTS'i > __
+
 
 
 language 
@@ -507,32 +508,32 @@ language
 # Meta Keywords
 # ------------------------------------------------------------------------------------
 
-keysep 
-    <- !idChars Spacing
+__ 
+    <- !idChars _
 
-SEP     <- ';' Spacing
-LBR    <- '(' Spacing
-RBR   <- ')' Spacing 
-COMMA   <- ',' Spacing
-DOLLAR  <- '$' Spacing
+SEP     <- ';' _
+LBR    <- '(' _
+RBR   <- ')' _ 
+COMMA   <- ',' _
+DOLLAR  <- '$' _
 DOUBLE_DOLLAR 
-        <- '$$' Spacing
-ASSIGN  <- ':=' Spacing
-EQUALS  <- '=' Spacing
-LSHIFT  <- '<<' Spacing
-RSHIFT  <- '>>' Spacing
-REQUALS <- '=>' Spacing
+        <- '$$' _
+ASSIGN  <- ':=' _
+EQUALS  <- '=' _
+LSHIFT  <- '<<' _
+RSHIFT  <- '>>' _
+REQUALS <- '=>' _
 DOUBLE_DOT
-        <- '..' Spacing
+        <- '..' _
 BLACKBOX_SYMBOL
-        <- '|' Spacing
+        <- '|' _
 
 
 # ------------------------------------------------------------------------------------
 # Whitespace, Comments and Aux
 # ------------------------------------------------------------------------------------
 
-Spacing 
+_ 
     <- (Space / Comment / EndOfLine)*
 
 Space 
@@ -552,7 +553,7 @@ EndOfFile
     <- !.
 
 blackbox 
-    <- BLACKBOX_SYMBOL (!BLACKBOX_SYMBOL .)* BLACKBOX_SYMBOL Spacing
+    <- BLACKBOX_SYMBOL (!BLACKBOX_SYMBOL .)* BLACKBOX_SYMBOL _
 
 %whitespace  <-  [ \t\r\n]*
 

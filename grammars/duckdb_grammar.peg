@@ -732,7 +732,7 @@ Indirection <- CastOperator / DotOperator / SliceExpression / PostfixOperator
 CastOperator <- '::' Type
 DotOperator <- '.' (FunctionExpression / ColLabel)
 SliceExpression <- '[' SliceBound ']'
-SliceBound <- Expression? EndSliceBound? StepSliceBound?
+SliceBound <- Expression? EndSliceBound?
 EndSliceBound <- ':' (Expression / '-')?
 StepSliceBOund <- ':' Expression?
 PostfixOperator <- '!'
@@ -981,7 +981,7 @@ ReturningClause <- 'RETURNING' TargetList
 CreateSchemaStmt <- 'SCHEMA' IfNotExists? QualifiedName
 SelectStatement <- SelectStatementInternal
 SelectStatementInternal <- SelectOrParens RepeatSetopSelect* ResultModifiers?
-RepeatSetopSelect <- SetOpClause SelectStatementInternal
+RepeatSetopSelect <- SelectStatementInternal
 SetopClause <- ('UNION' / 'EXCEPT' / 'INTERSECT') DistinctOrAll? ByName?
 ByName <- 'BY' 'NAME'
 SelectOrParens <- BaseSelect / SelectParens
