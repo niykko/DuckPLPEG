@@ -1,0 +1,30 @@
+t <- WORD+
+
+
+WORD <- <'word'i> __
+
+
+~__
+    <- !idChars _
+
+idChars 
+    <- [a-zA-Z0-9_]
+
+~_
+    <- (Space / Comment / EndOfLine)*
+
+Space 
+    <- ' ' 
+    / '\t'
+
+Comment 
+    <- '--' ((!EndOfLine) .)* (EndOfLine / EndOfFile)
+    / '/*' (!'*/' .)* '*/'
+
+EndOfLine 
+    <- '\r\n'
+    / '\n'
+    / '\r'
+
+EndOfFile
+    <- !.

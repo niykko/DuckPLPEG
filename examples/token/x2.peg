@@ -1,0 +1,17 @@
+t <- <D C+>
+
+
+START   <- A B C D LINES*
+A       <- 'aa' <'bb'>
+B       <- <'aa'> 'bb'
+C       <-  <'aa' ' ' 'bb'>
+D       <- 'aa' 'bb'
+LINES   <- ([0-9]+)  <[0-9a-zA-Z ]*>
+
+x <- D+
+
+
+%whitespace <- [ \t\r\n]*
+%word      <- !([ \t\r\n]*)
+
+# aabbaa bbaa bbaa bbaa bb

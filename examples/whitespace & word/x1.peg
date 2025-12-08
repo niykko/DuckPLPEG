@@ -1,0 +1,7 @@
+t <- WORD+
+
+
+WORD <- <'word'i> 
+
+%whitespace <- [ \t\r\n]*
+%word      <- ![ \t\r\n]

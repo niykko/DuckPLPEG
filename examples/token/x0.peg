@@ -1,0 +1,11 @@
+t <- WORDS
+
+
+WORDS <- word+
+
+word <- char+ 
+
+char <- [a-zA-Z]
+
+%whitespace <- [ \t\r\n]*
+%word      <- ![ \t\r\n]
