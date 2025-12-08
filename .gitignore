@@ -2,3 +2,4 @@
 .idea/
 test
 inter
+cmake-build-debug/
