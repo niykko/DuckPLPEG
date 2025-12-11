@@ -4,3 +4,4 @@ test
 inter
 cmake-build-debug/
 CMakeLists.txt
+*.tst
