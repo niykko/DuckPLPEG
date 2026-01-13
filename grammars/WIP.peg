@@ -1,0 +1,543 @@
+# ====================================================================================
+# PEG Grammar for 'some language, idk anymore'
+# ====================================================================================
+
+# ---- Top-level statement - This is the entry point ----
+
+test
+    <- program+
+
+program
+    <- postgresql_statement+ EndOfFile
+
+postgresql_statement
+    <- (create_function / create_procedure / drop_function) SEP
+
+
+# ------------------------------------------------------------------------------------
+# CREATE FUNCTION Statement
+# ------------------------------------------------------------------------------------
+
+create_function
+    <-  CREATE (OR REPLACE)? FUNCTION function_name create_function_arglist
+        (RETURNS SETOF? type 
+        / RETURNS TABLE column_list)?
+        function_options
+
+function_name 
+    <- name
+
+create_function_arglist 
+    <- LBR (create_function_arg (COMMA create_function_arg)*)? RBR
+
+create_function_arg 
+    <- argmode? argname? argtype ((EQUALS / DEFAULT) default_expr)?
+    / argmode? argtype ((EQUALS / DEFAULT) default_expr)?
+
+argmode 
+    <- IN / OUT/ INOUT / VARIADIC
+
+argname 
+    <- name 
+
+argtype 
+    <- type 
+
+default_expr 
+    <- expression
+
+column_list 
+    <- LBR column (COMMA column)* RBR
+
+column 
+    <- column_name column_type
+
+column_name 
+    <- name
+
+column_type
+    <- type
+
+function_options
+    <- function_option+
+
+function_option
+    <- (LANGUAGE language 
+    / transform_option
+    / WINDOW 
+    / volatility_option
+    / leakproof_option
+    / nullinput_option
+    / security_option
+    / parallel_option
+    / COST execution_cost
+    / ROWS result_rows
+    / SUPPORT support_function
+    / set_option
+    / AS definition
+    )
+
+transform_option
+    <- TRANSFORM transform_list 
+
+transform_list 
+    <- transformation (COMMA transformation)*
+
+transformation
+    <- FOR TYPE type 
+
+volatility_option
+    <- IMMUTABLE / STABLE / VOLATILE
+
+leakproof_option
+    <- NOT? LEAKPROOF 
+
+nullinput_option
+    <- CALLED ON NULL INPUT / RETURNS NULL ON NULL INPUT / STRICT
+
+security_option 
+    <- EXTERNAL? SECURITY INVOKER / EXTERNAL? SECURITY DEFINER
+
+parallel_option
+    <- PARALLEL (UNSAFE / RESTRICTED / SAFE)
+
+set_option 
+    <- SET configuration_parameter (TO expression / EQUALS expression / FROM CURRENT)
+
+execution_cost
+    <- positive_real # TODO: zu 'expression' blackboxen (nervt aber beim testen)
+
+result_rows 
+    <- positive_real # TODO: zu 'expression' blackboxen (nervt aber beim testen)
+
+support_function
+    <- function_name
+
+configuration_parameter
+    <- parameter_name
+
+parameter_name 
+    <- identifier
+
+definition 
+    <- block_start plpgsql_outer_block block_end 
+
+block_start
+    <- DOUBLE_DOLLAR
+    
+block_end
+    <- DOUBLE_DOLLAR
+
+
+# ------------------------------------------------------------------------------------
+# CREATE PROCEDURE Statement
+# ------------------------------------------------------------------------------------
+
+create_procedure
+    <-  CREATE (OR REPLACE)? PROCEDURE procedure_name create_function_arglist
+        procedure_options
+
+procedure_name 
+    <- name
+
+procedure_options
+    <- procedure_option+
+
+procedure_option
+    <- transform_option
+    / security_option
+    / set_option
+    / AS definition
+
+
+# ------------------------------------------------------------------------------------
+# DROP FUNCTION Statement
+# ------------------------------------------------------------------------------------
+
+drop_function
+    <- DROP FUNCTION (IF EXISTS)? function_name create_function_arglist?
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# PL/pgSQL
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+plpgsql_outer_block
+    <- shift_label? declare_section? BEGIN plpgsql_statement+ exception? END label? SEP? 
+
+plpgsql_inner_block
+    <- shift_label? declare_section? BEGIN plpgsql_statement+ exception? END label? SEP
+
+shift_label 
+    <- LSHIFT name RSHIFT   # TODO: note that <<   blubb   >> will have the name 'blubb' without spaces
+
+label 
+    <- name
+
+declare_section
+    <- DECLARE declaration+
+
+declaration
+    <- variable CONSTANT? type collation? (NOT NULL)? declaration_assignment? SEP
+
+collation 
+    <- COLLATE collation_name 
+
+collation_name
+    <- name
+
+declaration_assignment 
+    <- (DEFAULT / assign) expression
+
+assign 
+    <- ASSIGN / EQUALS
+
+exception 
+    <- EXCEPTION exception_handler+
+
+exception_handler
+    <- WHEN exception_conditions THEN plpgsql_statement+
+
+exception_conditions
+    <- exception_condition (OR exception_condition)*
+
+exception_condition
+    <- blackbox                              # TODO: implement our exception conditions or use postgresql's?
+    # found here: https://www.postgresql.org/docs/18/errcodes-appendix.html (Appendix A)
+
+
+# ------------------------------------------------------------------------------------
+# PL/pgSQL Statements
+# ------------------------------------------------------------------------------------
+
+plpgsql_statement
+    <- sql_command
+    / execute_statement
+    / null_statement
+    / return_statement 
+    / call_statement
+    / loop_statement
+    / if_statement 
+    / case_statement
+    / searched_case_statement
+    / continue_statement
+    / while_statement
+    / for_statement 
+    / for_query_statement
+    / foreach_statement
+    / cursor_statement
+    / exit_statement
+    / plpgsql_inner_block
+    / assignment_statement
+
+sql_command
+    <- blackbox SEP?            # TODO: let duckdb handle this
+
+assignment_statement
+    <- variable assign expression SEP 
+
+execute_statement
+    <- EXECUTE commandstring (INTO STRICT? variables)? (USING expressions)? SEP
+    
+commandstring
+    <- expression             # TODO: Special expression that returns a string of type text
+
+expressions 
+    <- expression (COMMA expression)*
+
+null_statement 
+    <- NULL SEP
+
+return_statement 
+    <- RETURN NEXT expression SEP
+    / RETURN QUERY (sql_command / execute_statement) SEP
+    / RETURN expression SEP
+
+call_statement
+    <- CALL (function_name / procedure_name) function_arglist SEP 
+
+function_arglist 
+    <- LBR function_args? RBR
+
+function_args
+    <- positional_then_named_args
+    / positional_args 
+    / named_args 
+
+positional_args 
+    <- function_arg (COMMA function_arg)*
+
+named_args
+    <- named_arg (COMMA named_arg)*
+
+named_arg
+    <- variable (ASSIGN / REQUALS) function_arg 
+
+positional_then_named_args
+    <- function_arg (COMMA function_arg)* COMMA named_arg (COMMA named_arg)*
+
+function_arg
+    <- !named_arg expression
+
+if_statement
+    <- IF boolexpr THEN plpgsql_statement+ 
+    (ELSIF boolexpr THEN plpgsql_statement+)*
+    (ELSE plpgsql_statement+)?
+    END IF SEP
+
+case_statement
+    <- CASE expression 
+    (WHEN expressions THEN plpgsql_statement+)+
+    (ELSE plpgsql_statement+)?
+    END CASE SEP
+     
+searched_case_statement
+    <- CASE 
+    (WHEN boolexpr THEN plpgsql_statement+)+
+    (ELSE plpgsql_statement+)?
+    END CASE SEP
+
+boolexpr
+    <- expression      # TODO: Special expression that returns a boolean
+
+loop_statement
+    <- shift_label? LOOP plpgsql_statement+ END LOOP label? SEP
+
+continue_statement
+    <- CONTINUE label? (WHEN boolexpr)? SEP
+
+while_statement
+    <- shift_label? WHILE boolexpr LOOP plpgsql_statement+ END LOOP label? SEP
+
+for_statement
+    <- shift_label? FOR name IN REVERSE? expression DOUBLE_DOT expression 
+    LOOP plpgsql_statement+ END LOOP label? SEP
+
+for_query_statement
+    <- shift_label? FOR variables IN (sql_command / execute_statement)
+    LOOP plpgsql_statement+ END LOOP label? SEP
+    
+foreach_statement
+    <- shift_label? FOREACH variable (SLICE number)? IN ARRAY expression 
+    LOOP plpgsql_statement+ END LOOP label? SEP
+
+cursor_statement
+    <- open_cursor
+    / fetch_cursor
+    / move_cursor 
+    / close_cursor
+
+open_cursor
+    <- open_for_query
+    / open_for_execute
+    / open_bound
+
+open_for_query
+    <- OPEN variable (NO? SCROLL)? FOR (sql_command / execute_statement) SEP
+
+open_for_execute
+    <- OPEN variable (NO? SCROLL)? FOR EXECUTE commandstring (USING expressions)? SEP
+
+open_bound
+    <- OPEN variable 
+    (LBR open_bound_assignment (COMMA open_bound_assignment)* RBR)? 
+    SEP
+
+open_bound_assignment
+    <- (name ( ASSIGN / REQUALS ))? expression
+
+fetch_cursor
+    <- FETCH direction? 
+    variable INTO variables SEP
+
+direction
+    <- (PRIOR / FIRST / LAST / FORWARD expression / BACKWARD expression / ABSOLUTE expression / RELATIVE expression) 
+    (FROM / IN)
+
+move_cursor 
+    <- MOVE direction? variable SEP
+
+close_cursor
+    <- CLOSE variable SEP
+
+exit_statement
+    <- EXIT label? (WHEN boolexpr)? SEP
+
+# ------------------------------------------------------------------------------------
+# Identifiers, Types and Expressions
+# ------------------------------------------------------------------------------------
+
+variable 
+    <- identifier
+
+variables
+    <- variable (COMMA variable)*
+
+name
+    <- identifier
+
+identifier 
+    <- <(quoted_id / id)>
+
+quoted_id
+    <- '"' ( '""' / (!'"' .) )* '"'
+
+id  <- idStart idChars* 
+
+idStart
+    <- [a-zA-Z_]
+
+idChars 
+    <- [a-zA-Z0-9_]
+
+positive_real 
+    <- [0-9]+ ('.' [0-9]*)?
+
+expression 
+    <- function_call / blackbox     # TODO: let duckdb handle this    
+
+type 
+    <- blackbox   # TODO: let duckdb handle this
+
+number 
+    <- [0-9]+ ('.' [0-9]+)?
+
+function_call
+    <- function_name function_arglist
+
+# ------------------------------------------------------------------------------------
+# Keywords
+# ------------------------------------------------------------------------------------
+
+~CREATE      <- 'CREATE'i
+~PROCEDURE   <- 'PROCEDURE'i 
+~LANGUAGE    <- 'LANGUAGE'i 
+~AS          <- 'AS'i 
+~SECURITY    <- 'SECURITY'i 
+~INVOKER     <- 'INVOKER'i 
+~DEFINER     <- 'DEFINER'i 
+~SET         <- 'SET'i 
+~CALL        <- 'CALL'i 
+~IN          <- 'IN'i 
+~OUT         <- 'OUT'i 
+~INOUT       <- 'INOUT'i 
+~BEGIN       <- 'BEGIN'i 
+~END         <- 'END'i 
+~DECLARE     <- 'DECLARE'i 
+~FUNCTION    <- 'FUNCTION'i 
+~OR          <- 'OR'i 
+~REPLACE     <- 'REPLACE'i 
+~RETURN      <- 'RETURN'i 
+~RETURNS     <- 'RETURNS'i 
+~TABLE       <- 'TABLE'i 
+~VARIADIC    <- 'VARIADIC'i 
+~TRANSFORM   <- 'TRANSFORM'i 
+~FOR         <- 'FOR'i 
+~TYPE        <- 'TYPE'i 
+~WINDOW      <- 'WINDOW'i 
+~IMMUTABLE   <- 'IMMUTABLE'i 
+~STABLE      <- 'STABLE'i 
+~VOLATILE    <- 'VOLATILE'i 
+~NOT         <- 'NOT'i 
+~LEAKPROOF   <- 'LEAKPROOF'i 
+~CALLED      <- 'CALLED'i 
+~ON          <- 'ON'i 
+~NULL        <- 'NULL'i 
+~INPUT       <- 'INPUT'i 
+~STRICT      <- 'STRICT'i 
+~EXTERNAL    <- 'EXTERNAL'i 
+~PARALLEL    <- 'PARALLEL'i 
+~COST        <- 'COST'i 
+~ROWS        <- 'ROWS'i 
+~SUPPORT     <- 'SUPPORT'i 
+~TO          <- 'TO'i 
+~FROM        <- 'FROM'i 
+~CURRENT     <- 'CURRENT'i 
+~UNSAFE      <- 'UNSAFE'i 
+~RESTRICTED  <- 'RESTRICTED'i 
+~SAFE        <- 'SAFE'i 
+~DEFAULT     <- 'DEFAULT'i 
+~CONSTANT    <- 'CONSTANT'i 
+~PLPGSQL     <- 'PLPGSQL'i 
+~COLLATE     <- 'COLLATE'i 
+~EXECUTE     <- 'EXECUTE'i 
+~INTO        <- 'INTO'i 
+~USING       <- 'USING'i 
+~NEXT        <- 'NEXT'i 
+~QUERY       <- 'QUERY'i 
+~SETOF       <- 'SETOF'i 
+~IF          <- 'IF'i 
+~THEN        <- 'THEN'i 
+~ELSE        <- 'ELSE'i 
+~ELSIF       <- 'ELSIF'i 
+~CASE        <- 'CASE'i 
+~WHEN        <- 'WHEN'i 
+~LOOP        <- 'LOOP'i 
+~CONTINUE    <- 'CONTINUE'i 
+~WHILE       <- 'WHILE'i 
+~REVERSE     <- 'REVERSE'i 
+~FOREACH     <- 'FOREACH'i 
+~ARRAY       <- 'ARRAY'i 
+~SLICE       <- 'SLICE'i 
+~EXCEPTION   <- 'EXCEPTION'i 
+~OPEN        <- 'OPEN'i 
+~CLOSE       <- 'CLOSE'i 
+~FETCH       <- 'FETCH'i 
+~MOVE        <- 'MOVE'i 
+~PRIOR       <- 'PRIOR'i 
+~FIRST       <- 'FIRST'i 
+~LAST        <- 'LAST'i 
+~ABSOLUTE    <- 'ABSOLUTE'i 
+~RELATIVE    <- 'RELATIVE'i 
+~FORWARD     <- 'FORWARD'i 
+~BACKWARD    <- 'BACKWARD'i 
+~NO          <- 'NO'i 
+~SCROLL      <- 'SCROLL'i 
+~EXIT        <- 'EXIT'i 
+~DROP        <- 'DROP'i 
+~EXISTS      <- 'EXISTS'i 
+
+
+language 
+    <- PLPGSQL
+    / 'other potential language'    # TODO: do we have other potential languages?
+
+
+# ------------------------------------------------------------------------------------
+# Meta Keywords
+# ------------------------------------------------------------------------------------
+
+SEP     <- ';'          
+LBR    <- '(' 
+RBR   <- ')' 
+COMMA   <- ',' 
+DOLLAR  <- '$' 
+DOUBLE_DOLLAR
+        <- '$$' 
+ASSIGN  <- ':=' 
+EQUALS  <- '=' 
+LSHIFT  <- '<<' 
+RSHIFT  <- '>>' 
+REQUALS <- '=>' 
+DOUBLE_DOT
+        <- '..' 
+BLACKBOX_SYMBOL
+        <- '|' 
+
+
+# ------------------------------------------------------------------------------------
+# Whitespace, Comments and Aux
+# ------------------------------------------------------------------------------------
+
+EndOfFile
+    <- !.
+
+blackbox 
+    <- BLACKBOX_SYMBOL (!BLACKBOX_SYMBOL .)* BLACKBOX_SYMBOL 
+
+%whitespace  <-  [ \t\r\n]*
+%word        <-  !([ \t\r\n]*)
+
+
+
+

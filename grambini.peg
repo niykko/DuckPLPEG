@@ -1,3 +1,4 @@
 QuotedString    <- '"' <String> '"'
-String          <- (! '"' Char )*
-Char            <- ('\\' . <.> ) / (!'\\' <.>)
+String          <- (! ('"'/'x') <Char> )* 'x' Char
+Char            <- ('\\' s <.> ) / (!'\\' <.>)
+s               <- <.>    

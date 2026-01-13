@@ -26,18 +26,16 @@ string evaluateExpression(const string &input, const string &grammarFile = "gram
     }
 
     parser["QuotedString"] = [](const SemanticValues &vs) {
-        std::cout << "QuotedString Token(0): " << vs.token(0) << std::endl;
-        std::cout << "QuotedString VS[0]: " << any_cast<string>(vs[0]) << std::endl;
+        std::cout << "QS token(0): " << vs.token(0) << std::endl;
+        std::cout << "QS vs[0]: " << any_cast<string>(vs[0]) << std::endl;
         return any_cast<string>(vs[0]);
     };
 
 
     parser["String"] = [](const SemanticValues &vs) {
         string s;
-        std::cout << "String Token(0): " << vs.token(0) << std::endl;
         for (const auto &v : vs) {
             s += any_cast<string>(v);
-            std::cout << "String v in vs[]:  " << any_cast<string>(v) << std::endl;
         }
         return s;
     };
@@ -46,10 +44,10 @@ string evaluateExpression(const string &input, const string &grammarFile = "gram
         string s = vs.token_to_string();
 
         if (vs.choice() == 0) {
-            std::cout << "Char VS[0]: " << any_cast<string>(vs[0]) << std::endl;
+            std::cout << "vs[0]: " << any_cast<string>(vs[0]) << std::endl;
         }
 
-        std::cout << "Char Token(0): " << vs.token(0) << std::endl;
+        std::cout << "Token(0): " << vs.token(0) << std::endl;
         return s;
     };
 
@@ -57,7 +55,7 @@ string evaluateExpression(const string &input, const string &grammarFile = "gram
     parser["s"] = [](const SemanticValues &vs) {
         string s = vs.token_to_string();
 
-        std::cout << "s Token(0): " << vs.token(0) << std::endl;
+        std::cout << "sToken(0): " << vs.token(0) << std::endl;
         return s;
     };
 

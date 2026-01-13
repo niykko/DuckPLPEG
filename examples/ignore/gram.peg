@@ -1,8 +1,6 @@
-t <- WORD+
+THREE_WORD_SENTENCE <- WORD __ WORD __ WORD
 
-
-WORD <- <'word'i> __
-
+WORD <- 'word'
 
 ~__
     <- !idChars _

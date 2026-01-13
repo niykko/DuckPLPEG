@@ -1,3 +1,0 @@
-QuotedString    <- '"' <String> '"'
-String          <- (! '"' Char )*
-Char            <- ('\\' . <.> ) / (!'\\' <.>)

@@ -1,4 +1,4 @@
-#include "peglib.h"
+#include "../../peglib.h"
 #include <cassert>
 #include <iostream>
 #include <fstream>
@@ -17,7 +17,7 @@ string loadGrammar(const string &filename) {
     return buffer.str();
 }
 
-string evaluateExpression(const string &input, const string &grammarFile = "grambini.peg") {
+string evaluateExpression(const string &input, const string &grammarFile = "gram.peg") {
     string grammar = loadGrammar(grammarFile);
     parser parser(grammar);
 
@@ -28,7 +28,7 @@ string evaluateExpression(const string &input, const string &grammarFile = "gram
     parser["QuotedString"] = [](const SemanticValues &vs) {
         std::cout << "QuotedString Token(0): " << vs.token(0) << std::endl;
         std::cout << "QuotedString VS[0]: " << any_cast<string>(vs[0]) << std::endl;
-        return any_cast<string>(vs[0]);
+        return any_cast<string>(vs[0])+" [CharSemanticBonus] ";
     };
 
 
@@ -39,7 +39,7 @@ string evaluateExpression(const string &input, const string &grammarFile = "gram
             s += any_cast<string>(v);
             std::cout << "String v in vs[]:  " << any_cast<string>(v) << std::endl;
         }
-        return s;
+        return s + " [StringSemanticBonus] ";
     };
 
     parser["Char"] = [](const SemanticValues &vs) {
@@ -74,7 +74,7 @@ string evaluateExpression(const string &input, const string &grammarFile = "gram
 int main() {
     try {
         string expr;
-        cout << "Enter arithmetic expressions to evaluate (or 'quit' to exit):\n";
+        cout << "Enter expressions to evaluate (or 'quit' to exit):\n";
         while (true) {
             cout << "> ";
             getline(cin, expr);
