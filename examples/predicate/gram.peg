@@ -1,0 +1,2 @@
+PARTY   <- CANDIDATE 
+CANDIDATE <- 'CDU' / 'SPD' / 'FDP' / 'Die Grünen' / 'Die Linke' / 'AfD'

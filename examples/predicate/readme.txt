@@ -1,0 +1,1 @@
+Demonstrate predicates (& logging)
