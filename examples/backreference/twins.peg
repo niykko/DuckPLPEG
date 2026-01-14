@@ -1,0 +1,4 @@
+TWINS <- (V1 V2)+
+V1 <- $tag<VAL>
+V2 <- $tag
+VAL <- 'a' / 'b'
