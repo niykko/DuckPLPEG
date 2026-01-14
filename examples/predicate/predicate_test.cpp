@@ -52,7 +52,7 @@ string evaluateExpression(const string &input, const string &grammarFile = "gram
     
     if (!parser.parse(input, val))
     {
-        throw runtime_error("Failed to parse input: " + input);
+        throw runtime_error("Please vote for CDU instead of " + input);
     }
 
     return val;
