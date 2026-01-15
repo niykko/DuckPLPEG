@@ -1,0 +1,8 @@
+ROOT      <- CONTENT
+CONTENT   <- (ELEMENT / TEXT)*
+ELEMENT   <- $(STAG CONTENT <ETAG>) <'x'>
+STAG      <- '<' $tag< TAG_NAME > '>'
+ETAG      <- '</' $tag '>'
+TAG_NAME  <- 'b' / 'u'
+TEXT      <- TEXT_DATA
+TEXT_DATA <- ![<] .
