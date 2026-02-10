@@ -1,0 +1,8 @@
+QuotedString    <- '"' <String> '"'
+String          <- (! '"' Char )*
+Char            <- ('\\' s) / (!'\\' <.> <.>)
+s               <- .    
+
+
+# "abc"
+# "a\bb\bc"

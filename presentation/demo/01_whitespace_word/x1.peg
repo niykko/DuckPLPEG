@@ -1,0 +1,6 @@
+t <- WORD+
+
+
+WORD <- 'word'i ' '
+
+%whitespace <- [ \t\r\n]*

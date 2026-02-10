@@ -1,0 +1,21 @@
+THREE_WORD_SENTENCE <- <WORD> ~__ <WORD> __ <WORD>
+
+WORD <- 'word'
+
+~__
+    <- !idChars _
+
+idChars 
+    <- [a-zA-Z0-9_]
+
+~_
+    <- (Space / EndOfLine)*
+
+Space 
+    <- ' ' 
+    / '\t'
+
+EndOfLine 
+    <- '\r\n'
+    / '\n'
+    / '\r'

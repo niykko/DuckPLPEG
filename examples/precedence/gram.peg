@@ -1,0 +1,12 @@
+EXPRESSION             <-  INFIX_EXPRESSION(ATOM, OPERATOR)
+ATOM                   <-  NUMBER / '(' EXPRESSION ')'
+OPERATOR               <-  < [-+/*] >
+NUMBER                 <-  < '-'? [0-9]+ >
+%whitespace            <-  [ \t]*
+
+# Order of precedence
+INFIX_EXPRESSION(A, O) <-  A (O A)* {
+  precedence
+    L + -
+    L * /
+}

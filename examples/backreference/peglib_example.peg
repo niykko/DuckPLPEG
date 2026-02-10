@@ -1,6 +1,6 @@
-ROOT      <- CONTENT
+ROOT      <- CONTENT $tag
 CONTENT   <- (ELEMENT / TEXT)*
-ELEMENT   <- $(STAG CONTENT ETAG)
+ELEMENT   <- $tag(STAG CONTENT ETAG)
 STAG      <- '<' $tag< TAG_NAME > '>'
 ETAG      <- '</' $tag '>'
 TAG_NAME  <- 'b' / 'u'
